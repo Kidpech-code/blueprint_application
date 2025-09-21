@@ -16,6 +16,14 @@ class GetBlogPostsUseCase {
     String? sortBy,
     String? sortOrder,
   }) async {
-    return await repository.getPosts(page: page, limit: limit, category: category, tag: tag, search: search, sortBy: sortBy, sortOrder: sortOrder);
+    return await repository.getPosts(
+      page: page,
+      limit: limit,
+      category: category,
+      tag: tag,
+      search: search,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
   }
 }

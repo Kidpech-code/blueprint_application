@@ -55,7 +55,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout(String accessToken) async {
     try {
-      final response = await dio.post('/auth/logout', options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      final response = await dio.post(
+        '/auth/logout',
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
 
       if (response.statusCode != 200) {
         throw ServerError('Logout failed', response.statusCode ?? 500);
@@ -70,12 +73,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> getCurrentUser(String accessToken) async {
     try {
-      final response = await dio.get('/auth/me', options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      final response = await dio.get(
+        '/auth/me',
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
 
       if (response.statusCode == 200) {
         return UserModel.fromJson(response.data);
       } else {
-        throw ServerError('Failed to get user data', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get user data',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -87,7 +96,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<AuthTokenModel> refreshToken(String refreshToken) async {
     try {
-      final response = await dio.post('/auth/refresh', data: {'refresh_token': refreshToken});
+      final response = await dio.post(
+        '/auth/refresh',
+        data: {'refresh_token': refreshToken},
+      );
 
       if (response.statusCode == 200) {
         return AuthTokenModel.fromJson(response.data);
@@ -104,7 +116,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> resetPassword(String email) async {
     try {
-      final response = await dio.post('/auth/reset-password', data: {'email': email});
+      final response = await dio.post(
+        '/auth/reset-password',
+        data: {'email': email},
+      );
 
       if (response.statusCode != 200) {
         throw ServerError('Password reset failed', response.statusCode ?? 500);
@@ -126,7 +141,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode != 200) {
-        throw ServerError('Email verification failed', response.statusCode ?? 500);
+        throw ServerError(
+          'Email verification failed',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -138,10 +156,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> resendVerificationEmail(String accessToken) async {
     try {
-      final response = await dio.post('/auth/resend-verification', options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      final response = await dio.post(
+        '/auth/resend-verification',
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
 
       if (response.statusCode != 200) {
-        throw ServerError('Failed to resend verification email', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to resend verification email',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -166,8 +190,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         } else if (statusCode == 403) {
           return AuthorizationError(message);
         } else if (statusCode == 422) {
-          final fieldErrors = error.response?.data?['errors'] as Map<String, dynamic>?;
-          return ValidationError(message, fieldErrors: fieldErrors?.map((key, value) => MapEntry(key, value.toString())));
+          final fieldErrors =
+              error.response?.data?['errors'] as Map<String, dynamic>?;
+          return ValidationError(
+            message,
+            fieldErrors: fieldErrors?.map(
+              (key, value) => MapEntry(key, value.toString()),
+            ),
+          );
         } else {
           return ServerError(message, statusCode ?? 500);
         }

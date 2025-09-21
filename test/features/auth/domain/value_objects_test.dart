@@ -49,7 +49,11 @@ void main() {
 
       // Act & Assert
       for (final emailString in validEmails) {
-        expect(() => Email.create(emailString), returnsNormally, reason: 'Should accept valid email: $emailString');
+        expect(
+          () => Email.create(emailString),
+          returnsNormally,
+          reason: 'Should accept valid email: $emailString',
+        );
       }
     });
 
@@ -69,14 +73,25 @@ void main() {
 
       // Act & Assert
       for (final emailString in invalidEmails) {
-        expect(() => Email.create(emailString), throwsArgumentError, reason: 'Should reject invalid email: $emailString');
+        expect(
+          () => Email.create(emailString),
+          throwsArgumentError,
+          reason: 'Should reject invalid email: $emailString',
+        );
       }
     });
 
     test('should throw error for empty email', () {
       // Act & Assert
       expect(() => Email.create(''), throwsArgumentError);
-      expect(() => Email.create(''), throwsA(predicate((e) => e is ArgumentError && e.message == 'Email cannot be empty')));
+      expect(
+        () => Email.create(''),
+        throwsA(
+          predicate(
+            (e) => e is ArgumentError && e.message == 'Email cannot be empty',
+          ),
+        ),
+      );
     });
 
     test('should support equality comparison', () {
@@ -120,16 +135,30 @@ void main() {
       final password = Password.create('secret123');
 
       // Assert
-      expect(password.toString(), equals('*********')); // 9 asterisks for 9 characters
+      expect(
+        password.toString(),
+        equals('*********'),
+      ); // 9 asterisks for 9 characters
     });
 
     test('should accept valid passwords', () {
       // Arrange
-      const validPasswords = ['password1', 'mySecret123', 'c0mpl3xP@ss', 'simple1password', 'Test123456', 'a1b2c3d4e5'];
+      const validPasswords = [
+        'password1',
+        'mySecret123',
+        'c0mpl3xP@ss',
+        'simple1password',
+        'Test123456',
+        'a1b2c3d4e5',
+      ];
 
       // Act & Assert
       for (final passwordString in validPasswords) {
-        expect(() => Password.create(passwordString), returnsNormally, reason: 'Should accept valid password: $passwordString');
+        expect(
+          () => Password.create(passwordString),
+          returnsNormally,
+          reason: 'Should accept valid password: $passwordString',
+        );
       }
     });
 
@@ -141,7 +170,13 @@ void main() {
       for (final passwordString in shortPasswords) {
         expect(
           () => Password.create(passwordString),
-          throwsA(predicate((e) => e is ArgumentError && e.message == 'Password must be at least 8 characters long')),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is ArgumentError &&
+                  e.message == 'Password must be at least 8 characters long',
+            ),
+          ),
           reason: 'Should reject short password: $passwordString',
         );
       }
@@ -149,13 +184,25 @@ void main() {
 
     test('should reject password without letters', () {
       // Arrange
-      final noLetterPasswords = ['12345678', '987654321', '11111111', r'!@#$%^&*'];
+      final noLetterPasswords = [
+        '12345678',
+        '987654321',
+        '11111111',
+        r'!@#$%^&*',
+      ];
 
       // Act & Assert
       for (final passwordString in noLetterPasswords) {
         expect(
           () => Password.create(passwordString),
-          throwsA(predicate((e) => e is ArgumentError && e.message == 'Password must contain at least one letter and one number')),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is ArgumentError &&
+                  e.message ==
+                      'Password must contain at least one letter and one number',
+            ),
+          ),
           reason: 'Should reject password without letters: $passwordString',
         );
       }
@@ -163,13 +210,25 @@ void main() {
 
     test('should reject password without numbers', () {
       // Arrange
-      final noNumberPasswords = ['passwordlong', 'abcdefghij', 'ALLCAPSLONGER', 'mixedCaseLonger'];
+      final noNumberPasswords = [
+        'passwordlong',
+        'abcdefghij',
+        'ALLCAPSLONGER',
+        'mixedCaseLonger',
+      ];
 
       // Act & Assert
       for (final passwordString in noNumberPasswords) {
         expect(
           () => Password.create(passwordString),
-          throwsA(predicate((e) => e is ArgumentError && e.message == 'Password must contain at least one letter and one number')),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is ArgumentError &&
+                  e.message ==
+                      'Password must contain at least one letter and one number',
+            ),
+          ),
           reason: 'Should reject password without numbers: $passwordString',
         );
       }
@@ -177,7 +236,15 @@ void main() {
 
     test('should throw error for empty password', () {
       // Act & Assert
-      expect(() => Password.create(''), throwsA(predicate((e) => e is ArgumentError && e.message == 'Password cannot be empty')));
+      expect(
+        () => Password.create(''),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError && e.message == 'Password cannot be empty',
+          ),
+        ),
+      );
     });
 
     test('should support equality comparison', () {
@@ -222,23 +289,52 @@ void main() {
 
     test('should accept valid name formats', () {
       // Arrange
-      const validNames = ['John', 'John Doe', 'Mary Jane', 'Jean-Luc', "O'Connor", 'Anna-Maria', 'José García', '李明', 'محمد احمد'];
+      const validNames = [
+        'John',
+        'John Doe',
+        'Mary Jane',
+        'Jean-Luc',
+        "O'Connor",
+        'Anna-Maria',
+        'José García',
+        '李明',
+        'محمد احمد',
+      ];
 
       // Act & Assert
       for (final nameString in validNames) {
-        expect(() => Name.create(nameString), returnsNormally, reason: 'Should accept valid name: $nameString');
+        expect(
+          () => Name.create(nameString),
+          returnsNormally,
+          reason: 'Should accept valid name: $nameString',
+        );
       }
     });
 
     test('should reject invalid name formats', () {
       // Arrange
-      const invalidNames = ['John123', 'User@Name', 'Name!', 'Test#Name', 'Name\$pecial', 'Name%Value', 'Name&Co', 'Name*Star'];
+      const invalidNames = [
+        'John123',
+        'User@Name',
+        'Name!',
+        'Test#Name',
+        'Name\$pecial',
+        'Name%Value',
+        'Name&Co',
+        'Name*Star',
+      ];
 
       // Act & Assert
       for (final nameString in invalidNames) {
         expect(
           () => Name.create(nameString),
-          throwsA(predicate((e) => e is ArgumentError && e.message == 'Name contains invalid characters')),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is ArgumentError &&
+                  e.message == 'Name contains invalid characters',
+            ),
+          ),
           reason: 'Should reject invalid name: $nameString',
         );
       }
@@ -246,14 +342,37 @@ void main() {
 
     test('should throw error for empty name', () {
       // Act & Assert
-      expect(() => Name.create(''), throwsA(predicate((e) => e is ArgumentError && e.message == 'Name cannot be empty')));
+      expect(
+        () => Name.create(''),
+        throwsA(
+          predicate(
+            (e) => e is ArgumentError && e.message == 'Name cannot be empty',
+          ),
+        ),
+      );
 
-      expect(() => Name.create('   '), throwsA(predicate((e) => e is ArgumentError && e.message == 'Name cannot be empty')));
+      expect(
+        () => Name.create('   '),
+        throwsA(
+          predicate(
+            (e) => e is ArgumentError && e.message == 'Name cannot be empty',
+          ),
+        ),
+      );
     });
 
     test('should throw error for name too short', () {
       // Act & Assert
-      expect(() => Name.create('A'), throwsA(predicate((e) => e is ArgumentError && e.message == 'Name must be at least 2 characters long')));
+      expect(
+        () => Name.create('A'),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.message == 'Name must be at least 2 characters long',
+          ),
+        ),
+      );
     });
 
     test('should throw error for name too long', () {
@@ -261,7 +380,16 @@ void main() {
       final longName = 'A' * 51; // 51 characters
 
       // Act & Assert
-      expect(() => Name.create(longName), throwsA(predicate((e) => e is ArgumentError && e.message == 'Name cannot exceed 50 characters')));
+      expect(
+        () => Name.create(longName),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.message == 'Name cannot exceed 50 characters',
+          ),
+        ),
+      );
     });
 
     test('should accept name at maximum length', () {
@@ -331,8 +459,14 @@ void main() {
       expect(() => Name.create('Jo'), returnsNormally);
 
       // Test maximum valid values
-      expect(() => Email.create('very.long.email.address@very.long.domain.name.com'), returnsNormally);
-      expect(() => Password.create('verylongpasswordwithmanycharacters123'), returnsNormally);
+      expect(
+        () => Email.create('very.long.email.address@very.long.domain.name.com'),
+        returnsNormally,
+      );
+      expect(
+        () => Password.create('verylongpasswordwithmanycharacters123'),
+        returnsNormally,
+      );
       expect(() => Name.create('A' * 50), returnsNormally);
     });
   });

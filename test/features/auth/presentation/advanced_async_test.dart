@@ -25,7 +25,11 @@ class SimpleUser {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SimpleUser && runtimeType == other.runtimeType && id == other.id && email == other.email && name == other.name;
+      other is SimpleUser &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          email == other.email &&
+          name == other.name;
 
   @override
   int get hashCode => id.hashCode ^ email.hashCode ^ name.hashCode;
@@ -169,7 +173,11 @@ class AsyncAuthViewModel extends ChangeNotifier {
         throw AuthException('User already exists');
       }
 
-      _currentUser = SimpleUser(id: DateTime.now().millisecondsSinceEpoch.toString(), email: email, name: name);
+      _currentUser = SimpleUser(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        email: email,
+        name: name,
+      );
       _setState(AuthState.authenticated);
       _addToHistory('SUCCESS: $operationId');
     } catch (e) {
@@ -408,7 +416,10 @@ void main() {
         // Assert
         expect(viewModel.state, AuthState.error);
         expect(viewModel.error, isA<ValidationException>());
-        expect((viewModel.error as ValidationException).message, 'Email and password are required');
+        expect(
+          (viewModel.error as ValidationException).message,
+          'Email and password are required',
+        );
       });
     });
 
@@ -449,7 +460,10 @@ void main() {
         // Assert
         expect(viewModel.state, AuthState.error);
         expect(viewModel.error, isA<AuthException>());
-        expect((viewModel.error as AuthException).message, 'User already exists');
+        expect(
+          (viewModel.error as AuthException).message,
+          'User already exists',
+        );
       });
     });
 
@@ -603,9 +617,18 @@ void main() {
 
         // Assert
         expect(viewModel.operationHistory.length, greaterThan(6)); // 6+ events
-        expect(viewModel.operationHistory.any((h) => h.contains('login')), true);
-        expect(viewModel.operationHistory.any((h) => h.contains('logout')), true);
-        expect(viewModel.operationHistory.any((h) => h.contains('failing')), true);
+        expect(
+          viewModel.operationHistory.any((h) => h.contains('login')),
+          true,
+        );
+        expect(
+          viewModel.operationHistory.any((h) => h.contains('logout')),
+          true,
+        );
+        expect(
+          viewModel.operationHistory.any((h) => h.contains('failing')),
+          true,
+        );
       });
     });
 
@@ -672,7 +695,14 @@ void main() {
         // Assert - should end up in a consistent state
         expect(viewModel.isLoading, false);
         expect(viewModel.operationCount, 0);
-        expect(viewModel.state, isIn([AuthState.authenticated, AuthState.unauthenticated, AuthState.error]));
+        expect(
+          viewModel.state,
+          isIn([
+            AuthState.authenticated,
+            AuthState.unauthenticated,
+            AuthState.error,
+          ]),
+        );
       });
 
       test('should handle operation cancellation pattern', () async {
@@ -725,7 +755,10 @@ void main() {
         await viewModel.login('test@example.com', 'password123');
 
         // Assert
-        expect(notificationCount, greaterThan(2)); // At least loading + authenticated
+        expect(
+          notificationCount,
+          greaterThan(2),
+        ); // At least loading + authenticated
         expect(notifications.length, notificationCount);
 
         // Clean up
@@ -763,7 +796,11 @@ void main() {
       expect(viewModel.state, AuthState.unauthenticated);
 
       // 5. User registers new account
-      await viewModel.register('newuser@example.com', 'password123', 'New User');
+      await viewModel.register(
+        'newuser@example.com',
+        'password123',
+        'New User',
+      );
       expect(viewModel.state, AuthState.authenticated);
       expect(viewModel.currentUser!.name, 'New User');
     });

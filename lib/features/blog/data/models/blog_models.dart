@@ -54,7 +54,8 @@ class BlogPostModel {
     required this.commentCount,
   });
 
-  factory BlogPostModel.fromJson(Map<String, dynamic> json) => _$BlogPostModelFromJson(json);
+  factory BlogPostModel.fromJson(Map<String, dynamic> json) =>
+      _$BlogPostModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlogPostModelToJson(this);
 
@@ -90,14 +91,27 @@ class BlogCategoryModel {
   @JsonKey(name: 'post_count')
   final int postCount;
 
-  const BlogCategoryModel({required this.id, required this.name, required this.slug, this.description, required this.postCount});
+  const BlogCategoryModel({
+    required this.id,
+    required this.name,
+    required this.slug,
+    this.description,
+    required this.postCount,
+  });
 
-  factory BlogCategoryModel.fromJson(Map<String, dynamic> json) => _$BlogCategoryModelFromJson(json);
+  factory BlogCategoryModel.fromJson(Map<String, dynamic> json) =>
+      _$BlogCategoryModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlogCategoryModelToJson(this);
 
   BlogCategory toEntity() {
-    return BlogCategory(id: id, name: name, slug: slug, description: description, postCount: postCount);
+    return BlogCategory(
+      id: id,
+      name: name,
+      slug: slug,
+      description: description,
+      postCount: postCount,
+    );
   }
 }
 
@@ -131,7 +145,8 @@ class BlogCommentModel {
     required this.replies,
   });
 
-  factory BlogCommentModel.fromJson(Map<String, dynamic> json) => _$BlogCommentModelFromJson(json);
+  factory BlogCommentModel.fromJson(Map<String, dynamic> json) =>
+      _$BlogCommentModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlogCommentModelToJson(this);
 
@@ -161,9 +176,16 @@ class BlogPostsResponse {
   @JsonKey(name: 'last_page')
   final int lastPage;
 
-  const BlogPostsResponse({required this.data, required this.total, required this.currentPage, required this.perPage, required this.lastPage});
+  const BlogPostsResponse({
+    required this.data,
+    required this.total,
+    required this.currentPage,
+    required this.perPage,
+    required this.lastPage,
+  });
 
-  factory BlogPostsResponse.fromJson(Map<String, dynamic> json) => _$BlogPostsResponseFromJson(json);
+  factory BlogPostsResponse.fromJson(Map<String, dynamic> json) =>
+      _$BlogPostsResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlogPostsResponseToJson(this);
 }

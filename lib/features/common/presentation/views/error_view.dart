@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/route_manager.dart';
 
 class ErrorView extends StatelessWidget {
   final String error;
@@ -58,7 +59,8 @@ class ErrorView extends StatelessWidget {
                         ),
                       OutlinedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                          // Use AppRouter.go to navigate when using go_router (MaterialApp.router)
+                          AppRouter.go('/');
                         },
                         icon: const Icon(Icons.home),
                         label: const Text('Go Home'),

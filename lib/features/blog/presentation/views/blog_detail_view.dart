@@ -13,7 +13,14 @@ class BlogDetailView extends StatefulWidget {
   final String slug;
   final bool isPreview;
 
-  const BlogDetailView({super.key, required this.year, required this.month, required this.day, required this.slug, this.isPreview = false});
+  const BlogDetailView({
+    super.key,
+    required this.year,
+    required this.month,
+    required this.day,
+    required this.slug,
+    this.isPreview = false,
+  });
 
   @override
   State<BlogDetailView> createState() => _BlogDetailViewState();
@@ -30,7 +37,13 @@ class _BlogDetailViewState extends State<BlogDetailView> {
   }
 
   void _loadPost() {
-    _blogViewModel.loadPostByDateAndSlug(year: widget.year, month: widget.month, day: widget.day, slug: widget.slug, isPreview: widget.isPreview);
+    _blogViewModel.loadPostByDateAndSlug(
+      year: widget.year,
+      month: widget.month,
+      day: widget.day,
+      slug: widget.slug,
+      isPreview: widget.isPreview,
+    );
   }
 
   @override
@@ -51,17 +64,31 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                   children: [
                     Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
                     const SizedBox(height: 16),
-                    Text('Post not found', style: Theme.of(context).textTheme.headlineSmall),
+                    Text(
+                      'Post not found',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       viewModel.postError!.message,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
-                    AppButton(text: 'Retry', onPressed: _loadPost, icon: Icons.refresh),
+                    AppButton(
+                      text: 'Retry',
+                      onPressed: _loadPost,
+                      icon: Icons.refresh,
+                    ),
                     const SizedBox(height: 8),
-                    AppButton(text: 'Back to Blog', onPressed: () => AppRouter.goToBlogList(), isOutlined: true, icon: Icons.arrow_back),
+                    AppButton(
+                      text: 'Back to Blog',
+                      onPressed: () => AppRouter.goToBlogList(),
+                      isOutlined: true,
+                      icon: Icons.arrow_back,
+                    ),
                   ],
                 ),
               ),
@@ -70,7 +97,11 @@ class _BlogDetailViewState extends State<BlogDetailView> {
 
           if (viewModel.currentPost == null) {
             return const Scaffold(
-              body: EmptyStateWidget(title: 'Post not found', subtitle: 'The post you are looking for does not exist.', icon: Icons.article_outlined),
+              body: EmptyStateWidget(
+                title: 'Post not found',
+                subtitle: 'The post you are looking for does not exist.',
+                icon: Icons.article_outlined,
+              ),
             );
           }
 
@@ -92,7 +123,13 @@ class _BlogDetailViewState extends State<BlogDetailView> {
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                shadows: [Shadow(offset: Offset(0, 1), blurRadius: 3, color: Colors.black54)],
+                shadows: [
+                  Shadow(
+                    offset: Offset(0, 1),
+                    blurRadius: 3,
+                    color: Colors.black54,
+                  ),
+                ],
               ),
             ),
             background: Stack(
@@ -106,7 +143,10 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.7)],
+                        colors: [
+                          Theme.of(context).primaryColor,
+                          Theme.of(context).primaryColor.withOpacity(0.7),
+                        ],
                       ),
                     ),
                   ),
@@ -115,7 +155,10 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
                     ),
                   ),
                 ),
@@ -136,7 +179,10 @@ class _BlogDetailViewState extends State<BlogDetailView> {
               const SizedBox(height: 32),
 
               // Post tags
-              if (post.tags.isNotEmpty) ...[_buildPostTags(post), const SizedBox(height: 32)],
+              if (post.tags.isNotEmpty) ...[
+                _buildPostTags(post),
+                const SizedBox(height: 32),
+              ],
 
               // Post actions
               _buildPostActions(post),
@@ -156,15 +202,28 @@ class _BlogDetailViewState extends State<BlogDetailView> {
       children: [
         CircleAvatar(
           radius: 20,
-          child: Text(post.authorName[0].toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
+          child: Text(
+            post.authorName[0].toUpperCase(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(post.authorName, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-              Text(AppUtils.formatDate(post.publishedAt), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+              Text(
+                post.authorName,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                AppUtils.formatDate(post.publishedAt),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+              ),
             ],
           ),
         ),
@@ -172,11 +231,21 @@ class _BlogDetailViewState extends State<BlogDetailView> {
           children: [
             Icon(Icons.visibility, size: 16, color: Colors.grey[600]),
             const SizedBox(width: 4),
-            Text(AppUtils.formatNumber(post.viewCount), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+            Text(
+              AppUtils.formatNumber(post.viewCount),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+            ),
             const SizedBox(width: 16),
             Icon(Icons.thumb_up, size: 16, color: Colors.grey[600]),
             const SizedBox(width: 4),
-            Text(AppUtils.formatNumber(post.likeCount), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+            Text(
+              AppUtils.formatNumber(post.likeCount),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+            ),
           ],
         ),
       ],
@@ -187,7 +256,12 @@ class _BlogDetailViewState extends State<BlogDetailView> {
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Text(post.content, style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6))],
+        children: [
+          Text(
+            post.content,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
+          ),
+        ],
       ),
     );
   }
@@ -197,7 +271,12 @@ class _BlogDetailViewState extends State<BlogDetailView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Tags', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'Tags',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -205,7 +284,9 @@ class _BlogDetailViewState extends State<BlogDetailView> {
             children: post.tags.map((tag) {
               return Chip(
                 label: Text(tag),
-                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                backgroundColor: Theme.of(
+                  context,
+                ).primaryColor.withOpacity(0.1),
                 labelStyle: TextStyle(color: Theme.of(context).primaryColor),
               );
             }).toList(),
@@ -248,7 +329,12 @@ class _BlogDetailViewState extends State<BlogDetailView> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, int? count, required VoidCallback onTap}) {
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    int? count,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -258,10 +344,21 @@ class _BlogDetailViewState extends State<BlogDetailView> {
           children: [
             Icon(icon, color: Colors.grey[600]),
             const SizedBox(height: 4),
-            Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+            ),
             if (count != null) ...[
               const SizedBox(height: 2),
-              Text(AppUtils.formatNumber(count), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[500], fontSize: 10)),
+              Text(
+                AppUtils.formatNumber(count),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey[500],
+                  fontSize: 10,
+                ),
+              ),
             ],
           ],
         ),
@@ -274,9 +371,18 @@ class _BlogDetailViewState extends State<BlogDetailView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Related Posts', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'Related Posts',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
-          const EmptyStateWidget(title: 'No related posts', subtitle: 'Related posts will appear here.', icon: Icons.article_outlined),
+          const EmptyStateWidget(
+            title: 'No related posts',
+            subtitle: 'Related posts will appear here.',
+            icon: Icons.article_outlined,
+          ),
         ],
       ),
     );

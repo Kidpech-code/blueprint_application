@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/route_manager.dart';
 
 class NotFoundView extends StatelessWidget {
   const NotFoundView({super.key});
@@ -34,7 +35,8 @@ class NotFoundView extends StatelessWidget {
                   const SizedBox(height: 32),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                      // Use AppRouter.go when using go_router
+                      AppRouter.go('/');
                     },
                     icon: const Icon(Icons.home),
                     label: const Text('Go Home'),

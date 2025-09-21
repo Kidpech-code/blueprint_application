@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'route_history.dart';
+import 'auth_interceptor.dart';
 
 // Features
 import '../features/auth/data/datasources/auth_remote_datasource.dart';
@@ -9,6 +11,7 @@ import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
 import '../features/auth/application/usecases/login_usecase.dart';
 import '../features/auth/application/usecases/register_usecase.dart';
+import '../features/auth/application/usecases/refresh_token_usecase.dart';
 import '../features/auth/application/usecases/logout_usecase.dart';
 import '../features/auth/application/usecases/get_current_user_usecase.dart';
 import '../features/auth/presentation/viewmodels/auth_viewmodel.dart';
@@ -44,6 +47,16 @@ Future<void> initializeDependencies() async {
       ..interceptors.addAll([LogInterceptor(requestBody: true, responseBody: true)]),
   );
 
+  // Route history service to remember last non-auth location
+  sl.registerLazySingleton(() => RouteHistory());
+
+  // Register AuthInterceptor and attach to Dio
+  sl.registerLazySingleton(() => AuthInterceptor(sl<RouteHistory>()));
+
+  // Attach interceptor to existing Dio instance
+  final dio = sl<Dio>();
+  dio.interceptors.add(sl<AuthInterceptor>());
+
   // Auth Feature
   _initAuthFeature();
 
@@ -66,6 +79,7 @@ void _initAuthFeature() {
   // Use Cases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  sl.registerLazySingleton(() => RefreshTokenUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => GetCurrentUserUseCase(sl()));
 

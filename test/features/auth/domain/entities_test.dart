@@ -11,7 +11,12 @@ import 'package:blueprint_application/features/auth/domain/entities/auth_entitie
 void main() {
   group('User Entity Tests', () {
     final testDateTime = DateTime.parse('2024-01-01T00:00:00Z');
-    final testUser = User(id: 'test-user-123', email: 'test@example.com', name: 'Test User', createdAt: testDateTime);
+    final testUser = User(
+      id: 'test-user-123',
+      email: 'test@example.com',
+      name: 'Test User',
+      createdAt: testDateTime,
+    );
 
     test('should create user with correct properties', () {
       // Act & Assert
@@ -27,11 +32,26 @@ void main() {
       // Arrange
       final createdAt = DateTime.parse('2024-01-01T00:00:00Z');
 
-      final user1 = User(id: 'user-1', email: 'user@test.com', name: 'User One', createdAt: createdAt);
+      final user1 = User(
+        id: 'user-1',
+        email: 'user@test.com',
+        name: 'User One',
+        createdAt: createdAt,
+      );
 
-      final user2 = User(id: 'user-1', email: 'user@test.com', name: 'User One', createdAt: createdAt);
+      final user2 = User(
+        id: 'user-1',
+        email: 'user@test.com',
+        name: 'User One',
+        createdAt: createdAt,
+      );
 
-      final user3 = User(id: 'user-2', email: 'user@test.com', name: 'User One', createdAt: createdAt);
+      final user3 = User(
+        id: 'user-2',
+        email: 'user@test.com',
+        name: 'User One',
+        createdAt: createdAt,
+      );
 
       // Act & Assert
       expect(user1, equals(user2)); // Same properties
@@ -51,7 +71,10 @@ void main() {
       );
 
       // Act & Assert
-      expect(userWithImage.profileImage, equals('https://example.com/avatar.jpg'));
+      expect(
+        userWithImage.profileImage,
+        equals('https://example.com/avatar.jpg'),
+      );
     });
 
     test('should handle null profile image gracefully', () {
@@ -72,7 +95,13 @@ void main() {
       final createdAt = DateTime.parse('2024-01-01T00:00:00Z');
       final lastLoginAt = DateTime.parse('2024-01-15T12:30:00Z');
 
-      final userWithLogin = User(id: 'login-user', email: 'login@example.com', name: 'Login User', createdAt: createdAt, lastLoginAt: lastLoginAt);
+      final userWithLogin = User(
+        id: 'login-user',
+        email: 'login@example.com',
+        name: 'Login User',
+        createdAt: createdAt,
+        lastLoginAt: lastLoginAt,
+      );
 
       // Act & Assert
       expect(userWithLogin.lastLoginAt, equals(lastLoginAt));
@@ -88,13 +117,19 @@ void main() {
       );
 
       // Act
-      final updatedUser = originalUser.copyWith(name: 'Updated User', profileImage: 'https://example.com/new-avatar.jpg');
+      final updatedUser = originalUser.copyWith(
+        name: 'Updated User',
+        profileImage: 'https://example.com/new-avatar.jpg',
+      );
 
       // Assert
       expect(updatedUser.id, equals(originalUser.id));
       expect(updatedUser.email, equals(originalUser.email));
       expect(updatedUser.name, equals('Updated User'));
-      expect(updatedUser.profileImage, equals('https://example.com/new-avatar.jpg'));
+      expect(
+        updatedUser.profileImage,
+        equals('https://example.com/new-avatar.jpg'),
+      );
       expect(updatedUser.createdAt, equals(originalUser.createdAt));
     });
 
@@ -113,13 +148,20 @@ void main() {
       // Assert
       expect(originalUser.name, equals('Immutable User'));
       expect(modifiedUser.name, equals('Modified Name'));
-      expect(originalUser.id, equals(modifiedUser.id)); // Other properties remain same
+      expect(
+        originalUser.id,
+        equals(modifiedUser.id),
+      ); // Other properties remain same
     });
   });
 
   group('AuthToken Entity Tests', () {
     final testExpiresAt = DateTime.parse('2024-12-31T23:59:59Z');
-    final testToken = AuthToken(accessToken: 'access-token-123', refreshToken: 'refresh-token-456', expiresAt: testExpiresAt);
+    final testToken = AuthToken(
+      accessToken: 'access-token-123',
+      refreshToken: 'refresh-token-456',
+      expiresAt: testExpiresAt,
+    );
 
     test('should create auth token with correct properties', () {
       // Act & Assert
@@ -132,11 +174,23 @@ void main() {
       // Arrange
       final expiresAt = DateTime.parse('2024-01-01T00:00:00Z');
 
-      final token1 = AuthToken(accessToken: 'token-a', refreshToken: 'refresh-a', expiresAt: expiresAt);
+      final token1 = AuthToken(
+        accessToken: 'token-a',
+        refreshToken: 'refresh-a',
+        expiresAt: expiresAt,
+      );
 
-      final token2 = AuthToken(accessToken: 'token-a', refreshToken: 'refresh-a', expiresAt: expiresAt);
+      final token2 = AuthToken(
+        accessToken: 'token-a',
+        refreshToken: 'refresh-a',
+        expiresAt: expiresAt,
+      );
 
-      final token3 = AuthToken(accessToken: 'token-b', refreshToken: 'refresh-a', expiresAt: expiresAt);
+      final token3 = AuthToken(
+        accessToken: 'token-b',
+        refreshToken: 'refresh-a',
+        expiresAt: expiresAt,
+      );
 
       // Act & Assert
       expect(token1, equals(token2));
@@ -147,7 +201,11 @@ void main() {
     test('should validate token expiration - not expired', () {
       // Arrange
       final futureTime = DateTime.now().add(const Duration(hours: 1));
-      final validToken = AuthToken(accessToken: 'valid-token', refreshToken: 'refresh-token', expiresAt: futureTime);
+      final validToken = AuthToken(
+        accessToken: 'valid-token',
+        refreshToken: 'refresh-token',
+        expiresAt: futureTime,
+      );
 
       // Act & Assert
       expect(validToken.isExpired, isFalse);
@@ -156,7 +214,11 @@ void main() {
     test('should validate token expiration - expired', () {
       // Arrange
       final pastTime = DateTime.now().subtract(const Duration(hours: 1));
-      final expiredToken = AuthToken(accessToken: 'expired-token', refreshToken: 'refresh-token', expiresAt: pastTime);
+      final expiredToken = AuthToken(
+        accessToken: 'expired-token',
+        refreshToken: 'refresh-token',
+        expiresAt: pastTime,
+      );
 
       // Act & Assert
       expect(expiredToken.isExpired, isTrue);
@@ -165,7 +227,11 @@ void main() {
     test('should validate token expiration - exactly now', () {
       // Arrange
       final now = DateTime.now();
-      final exactToken = AuthToken(accessToken: 'exact-token', refreshToken: 'refresh-token', expiresAt: now);
+      final exactToken = AuthToken(
+        accessToken: 'exact-token',
+        refreshToken: 'refresh-token',
+        expiresAt: now,
+      );
 
       // Act & Assert
       // Token is considered expired if current time is after OR equal to expiry
@@ -181,12 +247,21 @@ void main() {
       );
 
       // Act
-      final updatedToken = originalToken.copyWith(accessToken: 'new-access-token', expiresAt: DateTime.parse('2024-12-01T00:00:00Z'));
+      final updatedToken = originalToken.copyWith(
+        accessToken: 'new-access-token',
+        expiresAt: DateTime.parse('2024-12-01T00:00:00Z'),
+      );
 
       // Assert
       expect(updatedToken.accessToken, equals('new-access-token'));
-      expect(updatedToken.refreshToken, equals('original-refresh')); // Unchanged
-      expect(updatedToken.expiresAt, equals(DateTime.parse('2024-12-01T00:00:00Z')));
+      expect(
+        updatedToken.refreshToken,
+        equals('original-refresh'),
+      ); // Unchanged
+      expect(
+        updatedToken.expiresAt,
+        equals(DateTime.parse('2024-12-01T00:00:00Z')),
+      );
     });
 
     test('should maintain immutability with copyWith', () {
@@ -210,7 +285,12 @@ void main() {
   group('Edge Cases and Error Conditions', () {
     test('should handle empty string values in User', () {
       // Arrange & Act
-      final userWithEmptyStrings = User(id: '', email: '', name: '', createdAt: DateTime.parse('2024-01-01T00:00:00Z'));
+      final userWithEmptyStrings = User(
+        id: '',
+        email: '',
+        name: '',
+        createdAt: DateTime.parse('2024-01-01T00:00:00Z'),
+      );
 
       // Assert
       expect(userWithEmptyStrings.id, equals(''));
@@ -220,7 +300,11 @@ void main() {
 
     test('should handle empty string values in AuthToken', () {
       // Arrange & Act
-      final tokenWithEmptyStrings = AuthToken(accessToken: '', refreshToken: '', expiresAt: DateTime.parse('2024-01-01T00:00:00Z'));
+      final tokenWithEmptyStrings = AuthToken(
+        accessToken: '',
+        refreshToken: '',
+        expiresAt: DateTime.parse('2024-01-01T00:00:00Z'),
+      );
 
       // Assert
       expect(tokenWithEmptyStrings.accessToken, equals(''));
@@ -230,7 +314,11 @@ void main() {
     test('should handle far future dates', () {
       // Arrange
       final farFutureDate = DateTime.parse('2099-12-31T23:59:59Z');
-      final futureToken = AuthToken(accessToken: 'future-token', refreshToken: 'future-refresh', expiresAt: farFutureDate);
+      final futureToken = AuthToken(
+        accessToken: 'future-token',
+        refreshToken: 'future-refresh',
+        expiresAt: farFutureDate,
+      );
 
       // Act & Assert
       expect(futureToken.expiresAt, equals(farFutureDate));
@@ -240,7 +328,12 @@ void main() {
     test('should handle very old dates', () {
       // Arrange
       final veryOldDate = DateTime.parse('1970-01-01T00:00:00Z');
-      final oldUser = User(id: 'old-user', email: 'old@example.com', name: 'Old User', createdAt: veryOldDate);
+      final oldUser = User(
+        id: 'old-user',
+        email: 'old@example.com',
+        name: 'Old User',
+        createdAt: veryOldDate,
+      );
 
       // Act & Assert
       expect(oldUser.createdAt, equals(veryOldDate));

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 class AppUtils {
@@ -38,7 +39,9 @@ class AppUtils {
 
   static bool isPasswordValid(String password) {
     // At least 8 characters, contains letters and numbers
-    return RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$').hasMatch(password);
+    return RegExp(
+      r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$',
+    ).hasMatch(password);
   }
 
   static String truncateText(String text, int maxLength) {
@@ -129,6 +132,8 @@ class AppUtils {
   static void debugLog(String message, [String? tag]) {
     final timestamp = DateTime.now().toIso8601String();
     final logTag = tag != null ? '[$tag]' : '[DEBUG]';
-    print('$timestamp $logTag $message');
+    if (kDebugMode) {
+      print('$timestamp $logTag $message');
+    }
   }
 }

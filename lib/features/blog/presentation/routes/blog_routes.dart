@@ -18,7 +18,13 @@ class BlogRoutes {
         final slug = state.pathParameters['slug']!;
         final isPreview = state.uri.queryParameters['preview'] == 'true';
 
-        return BlogDetailView(year: year, month: month, day: day, slug: slug, isPreview: isPreview);
+        return BlogDetailView(
+          year: year,
+          month: month,
+          day: day,
+          slug: slug,
+          isPreview: isPreview,
+        );
       },
     ),
 
@@ -31,7 +37,11 @@ class BlogRoutes {
         final coupon = state.uri.queryParameters['coupon'];
 
         // This is a placeholder - you would create an EventBookingView
-        return EventBookingPlaceholderView(eventId: eventId, step: step, coupon: coupon);
+        return EventBookingPlaceholderView(
+          eventId: eventId,
+          step: step,
+          coupon: coupon,
+        );
       },
     ),
   ];
@@ -42,18 +52,32 @@ class EventBookingPlaceholderView extends StatelessWidget {
   final String? step;
   final String? coupon;
 
-  const EventBookingPlaceholderView({super.key, required this.eventId, this.step, this.coupon});
+  const EventBookingPlaceholderView({
+    super.key,
+    required this.eventId,
+    this.step,
+    this.coupon,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Event Booking'), backgroundColor: Theme.of(context).primaryColor, foregroundColor: Colors.white),
+      appBar: AppBar(
+        title: const Text('Event Booking'),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Event Booking Demo', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Event Booking Demo',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             Text('Event ID: $eventId'),
             if (step != null) Text('Step: $step'),
@@ -64,7 +88,12 @@ class EventBookingPlaceholderView extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 16),
-            Text('Example URLs:', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Example URLs:',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Text('• /event/123/booking'),
             Text('• /event/123/booking?step=payment'),

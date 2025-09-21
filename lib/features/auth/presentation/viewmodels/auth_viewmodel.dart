@@ -14,7 +14,12 @@ class AuthViewModel extends ChangeNotifier {
   final LogoutUseCase logoutUseCase;
   final GetCurrentUserUseCase getCurrentUserUseCase;
 
-  AuthViewModel({required this.loginUseCase, required this.registerUseCase, required this.logoutUseCase, required this.getCurrentUserUseCase});
+  AuthViewModel({
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.logoutUseCase,
+    required this.getCurrentUserUseCase,
+  });
 
   AuthState _state = AuthState.initial;
   User? _currentUser;

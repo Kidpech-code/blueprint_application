@@ -12,13 +12,18 @@ class Email {
       throw ArgumentError('Email cannot be empty');
     }
 
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
     if (!emailRegex.hasMatch(trimmedEmail)) {
       throw ArgumentError('Invalid email format');
     }
 
     // Additional validation: no consecutive dots, no dots at start/end
-    if (trimmedEmail.contains('..') || trimmedEmail.startsWith('.') || trimmedEmail.endsWith('.') || trimmedEmail.split('@')[0].endsWith('.')) {
+    if (trimmedEmail.contains('..') ||
+        trimmedEmail.startsWith('.') ||
+        trimmedEmail.endsWith('.') ||
+        trimmedEmail.split('@')[0].endsWith('.')) {
       throw ArgumentError('Invalid email format');
     }
 
@@ -26,7 +31,8 @@ class Email {
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Email && other.value == value;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Email && other.value == value;
 
   @override
   int get hashCode => value.hashCode;
@@ -54,14 +60,17 @@ class Password {
     final hasNumber = RegExp(r'\d').hasMatch(password);
 
     if (!hasLetter || !hasNumber) {
-      throw ArgumentError('Password must contain at least one letter and one number');
+      throw ArgumentError(
+        'Password must contain at least one letter and one number',
+      );
     }
 
     return Password._(password);
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Password && other.value == value;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Password && other.value == value;
 
   @override
   int get hashCode => value.hashCode;
@@ -100,7 +109,8 @@ class Name {
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Name && other.value == value;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Name && other.value == value;
 
   @override
   int get hashCode => value.hashCode;

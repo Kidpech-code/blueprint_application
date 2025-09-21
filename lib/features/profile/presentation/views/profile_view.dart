@@ -15,7 +15,8 @@ class ProfileView extends StatefulWidget {
   State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStateMixin {
+class _ProfileViewState extends State<ProfileView>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late ProfileViewModel _profileViewModel;
 
@@ -29,7 +30,9 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
 
     // Set initial tab if provided
     if (widget.tab != null) {
-      final tabIndex = _tabs.indexWhere((tab) => tab.toLowerCase() == widget.tab!.toLowerCase());
+      final tabIndex = _tabs.indexWhere(
+        (tab) => tab.toLowerCase() == widget.tab!.toLowerCase(),
+      );
       if (tabIndex >= 0) {
         _tabController.index = tabIndex;
       }
@@ -61,15 +64,24 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
                 children: [
                   Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
                   const SizedBox(height: 16),
-                  Text('Error loading profile', style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    'Error loading profile',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     viewModel.error!.message,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  AppButton(text: 'Retry', onPressed: () => viewModel.loadProfile(widget.userId), icon: Icons.refresh),
+                  AppButton(
+                    text: 'Retry',
+                    onPressed: () => viewModel.loadProfile(widget.userId),
+                    icon: Icons.refresh,
+                  ),
                 ],
               ),
             );
@@ -99,7 +111,9 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             expandedHeight: 300,
             pinned: true,
             backgroundColor: Theme.of(context).primaryColor,
-            flexibleSpace: FlexibleSpaceBar(background: _buildProfileHeader(profile)),
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildProfileHeader(profile),
+            ),
           ),
           SliverPersistentHeader(
             delegate: _TabBarDelegate(
@@ -117,7 +131,12 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
       },
       body: TabBarView(
         controller: _tabController,
-        children: [_buildPostsTab(profile), _buildAboutTab(profile), _buildPhotosTab(profile), _buildFriendsTab(profile)],
+        children: [
+          _buildPostsTab(profile),
+          _buildAboutTab(profile),
+          _buildPhotosTab(profile),
+          _buildFriendsTab(profile),
+        ],
       ),
     );
   }
@@ -133,7 +152,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.8)],
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColor.withOpacity(0.8),
+              ],
             ),
           ),
           child: profile.coverImage != null
@@ -143,7 +165,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.7)],
+                      colors: [
+                        Theme.of(context).primaryColor,
+                        Theme.of(context).primaryColor.withOpacity(0.7),
+                      ],
                     ),
                   ),
                 ),
@@ -165,11 +190,17 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
                   backgroundColor: Colors.white,
                   child: CircleAvatar(
                     radius: 47,
-                    backgroundImage: profile.profileImage != null ? NetworkImage(profile.profileImage!) : null,
+                    backgroundImage: profile.profileImage != null
+                        ? NetworkImage(profile.profileImage!)
+                        : null,
                     child: profile.profileImage == null
                         ? Text(
-                            profile.firstName[0].toUpperCase() + profile.lastName[0].toUpperCase(),
-                            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                            profile.firstName[0].toUpperCase() +
+                                profile.lastName[0].toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
                           )
                         : null,
                   ),
@@ -184,13 +215,20 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
                     children: [
                       Text(
                         profile.fullName,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                       if (profile.bio != null) ...[
                         const SizedBox(height: 4),
                         Text(
                           profile.bio!,
-                          style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.9)),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -199,9 +237,19 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(Icons.location_on, size: 16, color: Colors.white.withOpacity(0.8)),
+                            Icon(
+                              Icons.location_on,
+                              size: 16,
+                              color: Colors.white.withOpacity(0.8),
+                            ),
                             const SizedBox(width: 4),
-                            Text(profile.location!, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.8))),
+                            Text(
+                              profile.location!,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -219,7 +267,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
                       },
                       icon: const Icon(Icons.person_add),
                       label: const Text('Follow'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Theme.of(context).primaryColor),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Theme.of(context).primaryColor,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     OutlinedButton.icon(
@@ -245,7 +296,11 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
 
   Widget _buildPostsTab(Profile profile) {
     return const Center(
-      child: EmptyStateWidget(title: 'No posts yet', subtitle: 'Posts will appear here when available.', icon: Icons.post_add),
+      child: EmptyStateWidget(
+        title: 'No posts yet',
+        subtitle: 'Posts will appear here when available.',
+        icon: Icons.post_add,
+      ),
     );
   }
 
@@ -257,19 +312,41 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('About', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'About',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 16),
 
-              if (profile.bio != null) ...[_buildInfoRow(Icons.info_outline, 'Bio', profile.bio!), const SizedBox(height: 12)],
+              if (profile.bio != null) ...[
+                _buildInfoRow(Icons.info_outline, 'Bio', profile.bio!),
+                const SizedBox(height: 12),
+              ],
 
-              _buildInfoRow(Icons.cake, 'Birthday', AppUtils.formatDate(profile.dateOfBirth)),
+              _buildInfoRow(
+                Icons.cake,
+                'Birthday',
+                AppUtils.formatDate(profile.dateOfBirth),
+              ),
 
-              if (profile.phone != null) ...[const SizedBox(height: 12), _buildInfoRow(Icons.phone, 'Phone', profile.phone!)],
+              if (profile.phone != null) ...[
+                const SizedBox(height: 12),
+                _buildInfoRow(Icons.phone, 'Phone', profile.phone!),
+              ],
 
-              if (profile.website != null) ...[const SizedBox(height: 12), _buildInfoRow(Icons.language, 'Website', profile.website!)],
+              if (profile.website != null) ...[
+                const SizedBox(height: 12),
+                _buildInfoRow(Icons.language, 'Website', profile.website!),
+              ],
 
               const SizedBox(height: 12),
-              _buildInfoRow(Icons.calendar_today, 'Joined', AppUtils.formatDate(profile.createdAt)),
+              _buildInfoRow(
+                Icons.calendar_today,
+                'Joined',
+                AppUtils.formatDate(profile.createdAt),
+              ),
             ],
           ),
         ),
@@ -279,13 +356,21 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
 
   Widget _buildPhotosTab(Profile profile) {
     return const Center(
-      child: EmptyStateWidget(title: 'No photos yet', subtitle: 'Photos will appear here when available.', icon: Icons.photo_library),
+      child: EmptyStateWidget(
+        title: 'No photos yet',
+        subtitle: 'Photos will appear here when available.',
+        icon: Icons.photo_library,
+      ),
     );
   }
 
   Widget _buildFriendsTab(Profile profile) {
     return const Center(
-      child: EmptyStateWidget(title: 'No friends yet', subtitle: 'Friends will appear here when available.', icon: Icons.people),
+      child: EmptyStateWidget(
+        title: 'No friends yet',
+        subtitle: 'Friends will appear here when available.',
+        icon: Icons.people,
+      ),
     );
   }
 
@@ -301,7 +386,10 @@ class _ProfileViewState extends State<ProfileView> with SingleTickerProviderStat
             children: [
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600], fontWeight: FontWeight.w500),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 2),
               Text(value, style: Theme.of(context).textTheme.bodyMedium),
@@ -325,8 +413,15 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => tabBar.preferredSize.height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(color: Theme.of(context).scaffoldBackgroundColor, child: tabBar);
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: tabBar,
+    );
   }
 
   @override

@@ -91,7 +91,12 @@ class ProfileStats extends Equatable {
   final int posts;
   final int likes;
 
-  const ProfileStats({required this.followers, required this.following, required this.posts, required this.likes});
+  const ProfileStats({
+    required this.followers,
+    required this.following,
+    required this.posts,
+    required this.likes,
+  });
 
   @override
   List<Object> get props => [followers, following, posts, likes];

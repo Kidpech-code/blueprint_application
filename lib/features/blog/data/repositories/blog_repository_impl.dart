@@ -47,7 +47,13 @@ class BlogRepositoryImpl implements BlogRepository {
     bool isPreview = false,
   }) async {
     try {
-      final model = await remoteDataSource.getPostByDateAndSlug(year: year, month: month, day: day, slug: slug, isPreview: isPreview);
+      final model = await remoteDataSource.getPostByDateAndSlug(
+        year: year,
+        month: month,
+        day: day,
+        slug: slug,
+        isPreview: isPreview,
+      );
 
       return Success(model.toEntity());
     } on AppError catch (e) {
@@ -83,9 +89,15 @@ class BlogRepositoryImpl implements BlogRepository {
   }
 
   @override
-  Future<Result<List<BlogPost>>> getRelatedPosts(String postId, {int limit = 5}) async {
+  Future<Result<List<BlogPost>>> getRelatedPosts(
+    String postId, {
+    int limit = 5,
+  }) async {
     try {
-      final models = await remoteDataSource.getRelatedPosts(postId, limit: limit);
+      final models = await remoteDataSource.getRelatedPosts(
+        postId,
+        limit: limit,
+      );
       final posts = models.map((model) => model.toEntity()).toList();
       return Success(posts);
     } on AppError catch (e) {
@@ -109,9 +121,17 @@ class BlogRepositoryImpl implements BlogRepository {
   }
 
   @override
-  Future<Result<List<BlogPost>>> getPostsByCategory(String categorySlug, {int page = 1, int limit = 10}) async {
+  Future<Result<List<BlogPost>>> getPostsByCategory(
+    String categorySlug, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await remoteDataSource.getPostsByCategory(categorySlug, page: page, limit: limit);
+      final response = await remoteDataSource.getPostsByCategory(
+        categorySlug,
+        page: page,
+        limit: limit,
+      );
 
       final posts = response.data.map((model) => model.toEntity()).toList();
       return Success(posts);
@@ -123,9 +143,17 @@ class BlogRepositoryImpl implements BlogRepository {
   }
 
   @override
-  Future<Result<List<BlogPost>>> getPostsByTag(String tag, {int page = 1, int limit = 10}) async {
+  Future<Result<List<BlogPost>>> getPostsByTag(
+    String tag, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await remoteDataSource.getPostsByTag(tag, page: page, limit: limit);
+      final response = await remoteDataSource.getPostsByTag(
+        tag,
+        page: page,
+        limit: limit,
+      );
 
       final posts = response.data.map((model) => model.toEntity()).toList();
       return Success(posts);
@@ -164,11 +192,20 @@ class BlogRepositoryImpl implements BlogRepository {
   }
 
   @override
-  Future<Result<BlogComment>> addComment(String postId, String content, {String? parentId}) async {
+  Future<Result<BlogComment>> addComment(
+    String postId,
+    String content, {
+    String? parentId,
+  }) async {
     try {
       // Note: In a real implementation, you would get the access token from auth repository
       const accessToken = 'dummy_token'; // This should come from AuthRepository
-      final model = await remoteDataSource.addComment(postId, content, accessToken, parentId: parentId);
+      final model = await remoteDataSource.addComment(
+        postId,
+        content,
+        accessToken,
+        parentId: parentId,
+      );
 
       return Success(model.toEntity());
     } on AppError catch (e) {
@@ -179,9 +216,17 @@ class BlogRepositoryImpl implements BlogRepository {
   }
 
   @override
-  Future<Result<List<BlogPost>>> searchPosts(String query, {int page = 1, int limit = 10}) async {
+  Future<Result<List<BlogPost>>> searchPosts(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await remoteDataSource.searchPosts(query, page: page, limit: limit);
+      final response = await remoteDataSource.searchPosts(
+        query,
+        page: page,
+        limit: limit,
+      );
 
       final posts = response.data.map((model) => model.toEntity()).toList();
       return Success(posts);

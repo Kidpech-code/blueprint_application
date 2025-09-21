@@ -43,7 +43,8 @@ class ProfileModel {
     required this.updatedAt,
   });
 
-  factory ProfileModel.fromJson(Map<String, dynamic> json) => _$ProfileModelFromJson(json);
+  factory ProfileModel.fromJson(Map<String, dynamic> json) =>
+      _$ProfileModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProfileModelToJson(this);
 
@@ -91,14 +92,25 @@ class ProfileStatsModel {
   final int posts;
   final int likes;
 
-  const ProfileStatsModel({required this.followers, required this.following, required this.posts, required this.likes});
+  const ProfileStatsModel({
+    required this.followers,
+    required this.following,
+    required this.posts,
+    required this.likes,
+  });
 
-  factory ProfileStatsModel.fromJson(Map<String, dynamic> json) => _$ProfileStatsModelFromJson(json);
+  factory ProfileStatsModel.fromJson(Map<String, dynamic> json) =>
+      _$ProfileStatsModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProfileStatsModelToJson(this);
 
   ProfileStats toEntity() {
-    return ProfileStats(followers: followers, following: following, posts: posts, likes: likes);
+    return ProfileStats(
+      followers: followers,
+      following: following,
+      posts: posts,
+      likes: likes,
+    );
   }
 }
 
@@ -125,7 +137,8 @@ class UpdateProfileRequest {
     this.location,
   });
 
-  factory UpdateProfileRequest.fromJson(Map<String, dynamic> json) => _$UpdateProfileRequestFromJson(json);
+  factory UpdateProfileRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProfileRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$UpdateProfileRequestToJson(this);
 }

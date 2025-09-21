@@ -25,12 +25,29 @@ abstract class BlogRemoteDataSource {
   Future<List<BlogPostModel>> getFeaturedPosts({int limit = 5});
   Future<List<BlogPostModel>> getRelatedPosts(String postId, {int limit = 5});
   Future<List<BlogCategoryModel>> getCategories();
-  Future<BlogPostsResponse> getPostsByCategory(String categorySlug, {int page = 1, int limit = 10});
-  Future<BlogPostsResponse> getPostsByTag(String tag, {int page = 1, int limit = 10});
+  Future<BlogPostsResponse> getPostsByCategory(
+    String categorySlug, {
+    int page = 1,
+    int limit = 10,
+  });
+  Future<BlogPostsResponse> getPostsByTag(
+    String tag, {
+    int page = 1,
+    int limit = 10,
+  });
   Future<List<BlogCommentModel>> getPostComments(String postId);
   Future<void> togglePostLike(String postId, String accessToken);
-  Future<BlogCommentModel> addComment(String postId, String content, String accessToken, {String? parentId});
-  Future<BlogPostsResponse> searchPosts(String query, {int page = 1, int limit = 10});
+  Future<BlogCommentModel> addComment(
+    String postId,
+    String content,
+    String accessToken, {
+    String? parentId,
+  });
+  Future<BlogPostsResponse> searchPosts(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  });
 }
 
 class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
@@ -57,12 +74,18 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
       if (sortBy != null) queryParameters['sort_by'] = sortBy;
       if (sortOrder != null) queryParameters['sort_order'] = sortOrder;
 
-      final response = await dio.get('/blog/posts', queryParameters: queryParameters);
+      final response = await dio.get(
+        '/blog/posts',
+        queryParameters: queryParameters,
+      );
 
       if (response.statusCode == 200) {
         return BlogPostsResponse.fromJson(response.data);
       } else {
-        throw ServerError('Failed to get blog posts', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get blog posts',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -83,7 +106,10 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
       final queryParameters = <String, dynamic>{};
       if (isPreview) queryParameters['preview'] = 'true';
 
-      final response = await dio.get('/blog/$year/$month/$day/$slug', queryParameters: queryParameters.isNotEmpty ? queryParameters : null);
+      final response = await dio.get(
+        '/blog/$year/$month/$day/$slug',
+        queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
+      );
 
       if (response.statusCode == 200) {
         return BlogPostModel.fromJson(response.data);
@@ -117,13 +143,19 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   @override
   Future<List<BlogPostModel>> getFeaturedPosts({int limit = 5}) async {
     try {
-      final response = await dio.get('/blog/featured', queryParameters: {'limit': limit});
+      final response = await dio.get(
+        '/blog/featured',
+        queryParameters: {'limit': limit},
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data as List<dynamic>;
         return data.map((json) => BlogPostModel.fromJson(json)).toList();
       } else {
-        throw ServerError('Failed to get featured posts', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get featured posts',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -133,15 +165,24 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   }
 
   @override
-  Future<List<BlogPostModel>> getRelatedPosts(String postId, {int limit = 5}) async {
+  Future<List<BlogPostModel>> getRelatedPosts(
+    String postId, {
+    int limit = 5,
+  }) async {
     try {
-      final response = await dio.get('/blog/posts/$postId/related', queryParameters: {'limit': limit});
+      final response = await dio.get(
+        '/blog/posts/$postId/related',
+        queryParameters: {'limit': limit},
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data as List<dynamic>;
         return data.map((json) => BlogPostModel.fromJson(json)).toList();
       } else {
-        throw ServerError('Failed to get related posts', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get related posts',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -159,7 +200,10 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
         final List<dynamic> data = response.data as List<dynamic>;
         return data.map((json) => BlogCategoryModel.fromJson(json)).toList();
       } else {
-        throw ServerError('Failed to get categories', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get categories',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -169,14 +213,24 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   }
 
   @override
-  Future<BlogPostsResponse> getPostsByCategory(String categorySlug, {int page = 1, int limit = 10}) async {
+  Future<BlogPostsResponse> getPostsByCategory(
+    String categorySlug, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await dio.get('/blog/categories/$categorySlug/posts', queryParameters: {'page': page, 'limit': limit});
+      final response = await dio.get(
+        '/blog/categories/$categorySlug/posts',
+        queryParameters: {'page': page, 'limit': limit},
+      );
 
       if (response.statusCode == 200) {
         return BlogPostsResponse.fromJson(response.data);
       } else {
-        throw ServerError('Failed to get posts by category', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get posts by category',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -186,14 +240,24 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   }
 
   @override
-  Future<BlogPostsResponse> getPostsByTag(String tag, {int page = 1, int limit = 10}) async {
+  Future<BlogPostsResponse> getPostsByTag(
+    String tag, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await dio.get('/blog/tags/$tag/posts', queryParameters: {'page': page, 'limit': limit});
+      final response = await dio.get(
+        '/blog/tags/$tag/posts',
+        queryParameters: {'page': page, 'limit': limit},
+      );
 
       if (response.statusCode == 200) {
         return BlogPostsResponse.fromJson(response.data);
       } else {
-        throw ServerError('Failed to get posts by tag', response.statusCode ?? 500);
+        throw ServerError(
+          'Failed to get posts by tag',
+          response.statusCode ?? 500,
+        );
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -223,7 +287,10 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   @override
   Future<void> togglePostLike(String postId, String accessToken) async {
     try {
-      final response = await dio.post('/blog/posts/$postId/like', options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+      final response = await dio.post(
+        '/blog/posts/$postId/like',
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
 
       if (response.statusCode != 200) {
         throw ServerError('Failed to toggle like', response.statusCode ?? 500);
@@ -236,7 +303,12 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   }
 
   @override
-  Future<BlogCommentModel> addComment(String postId, String content, String accessToken, {String? parentId}) async {
+  Future<BlogCommentModel> addComment(
+    String postId,
+    String content,
+    String accessToken, {
+    String? parentId,
+  }) async {
     try {
       final data = <String, dynamic>{'content': content};
       if (parentId != null) data['parent_id'] = parentId;
@@ -260,9 +332,16 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   }
 
   @override
-  Future<BlogPostsResponse> searchPosts(String query, {int page = 1, int limit = 10}) async {
+  Future<BlogPostsResponse> searchPosts(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await dio.get('/blog/search', queryParameters: {'q': query, 'page': page, 'limit': limit});
+      final response = await dio.get(
+        '/blog/search',
+        queryParameters: {'q': query, 'page': page, 'limit': limit},
+      );
 
       if (response.statusCode == 200) {
         return BlogPostsResponse.fromJson(response.data);

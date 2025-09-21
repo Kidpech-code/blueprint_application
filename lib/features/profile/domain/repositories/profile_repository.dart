@@ -27,8 +27,16 @@ abstract class ProfileRepository {
   Future<Result<bool>> isFollowing(String userId);
 
   /// Get followers list
-  Future<Result<List<Profile>>> getFollowers(String userId, {int page = 1, int limit = 20});
+  Future<Result<List<Profile>>> getFollowers(
+    String userId, {
+    int page = 1,
+    int limit = 20,
+  });
 
   /// Get following list
-  Future<Result<List<Profile>>> getFollowing(String userId, {int page = 1, int limit = 20});
+  Future<Result<List<Profile>>> getFollowing(
+    String userId, {
+    int page = 1,
+    int limit = 20,
+  });
 }

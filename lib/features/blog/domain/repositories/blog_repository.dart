@@ -29,16 +29,27 @@ abstract class BlogRepository {
   Future<Result<List<BlogPost>>> getFeaturedPosts({int limit = 5});
 
   /// Get related posts
-  Future<Result<List<BlogPost>>> getRelatedPosts(String postId, {int limit = 5});
+  Future<Result<List<BlogPost>>> getRelatedPosts(
+    String postId, {
+    int limit = 5,
+  });
 
   /// Get blog categories
   Future<Result<List<BlogCategory>>> getCategories();
 
   /// Get posts by category
-  Future<Result<List<BlogPost>>> getPostsByCategory(String categorySlug, {int page = 1, int limit = 10});
+  Future<Result<List<BlogPost>>> getPostsByCategory(
+    String categorySlug, {
+    int page = 1,
+    int limit = 10,
+  });
 
   /// Get posts by tag
-  Future<Result<List<BlogPost>>> getPostsByTag(String tag, {int page = 1, int limit = 10});
+  Future<Result<List<BlogPost>>> getPostsByTag(
+    String tag, {
+    int page = 1,
+    int limit = 10,
+  });
 
   /// Get post comments
   Future<Result<List<BlogComment>>> getPostComments(String postId);
@@ -47,8 +58,16 @@ abstract class BlogRepository {
   Future<Result<void>> togglePostLike(String postId);
 
   /// Add comment to post
-  Future<Result<BlogComment>> addComment(String postId, String content, {String? parentId});
+  Future<Result<BlogComment>> addComment(
+    String postId,
+    String content, {
+    String? parentId,
+  });
 
   /// Search posts
-  Future<Result<List<BlogPost>>> searchPosts(String query, {int page = 1, int limit = 10});
+  Future<Result<List<BlogPost>>> searchPosts(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  });
 }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../../../common/presentation/widgets/common_widgets.dart';
-import '../../../../core/utils.dart';
 import '../../../../core/route_manager.dart';
+import '../../../../core/dependency_injection.dart';
+import '../../../../core/route_history.dart';
+import '../../../../core/redirect_resolver.dart';
 
 class LoginView extends StatefulWidget {
   final String? redirectTo;
@@ -69,39 +71,6 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         const SizedBox(height: 32),
 
-                        // Email Field
-                        TextFormField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          autocorrect: false,
-                          decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined), border: OutlineInputBorder()),
-                          validator: AppUtils.validateEmail,
-                          enabled: !authViewModel.isLoading,
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Password Field
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: _obscurePassword,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            prefixIcon: const Icon(Icons.lock_outlined),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          validator: (value) => AppUtils.validateRequired(value, 'Password'),
-                          enabled: !authViewModel.isLoading,
-                        ),
-                        const SizedBox(height: 24),
-
                         // Error Message
                         if (authViewModel.error != null) ...[
                           Container(
@@ -160,7 +129,8 @@ class _LoginViewState extends State<LoginView> {
                           onPressed: authViewModel.isLoading
                               ? null
                               : () {
-                                  // TODO: Navigate to forgot password
+                                  // Navigate to forgot password screen
+                                  AppRouter.go('/forgot-password');
                                 },
                           child: Text('Forgot Password?', style: TextStyle(color: Theme.of(context).primaryColor)),
                         ),
@@ -184,9 +154,13 @@ class _LoginViewState extends State<LoginView> {
       final authViewModel = context.read<AuthViewModel>();
       authViewModel.login(_emailController.text.trim(), _passwordController.text).then((_) {
         if (authViewModel.isAuthenticated) {
-          // Navigate to redirect URL or home
-          final redirectTo = widget.redirectTo ?? '/profile/${authViewModel.currentUser!.id}';
-          AppRouter.go(redirectTo);
+          final redirect = resolveRedirect(
+            widgetRedirect: widget.redirectTo,
+            lastFromHistory: sl.isRegistered<RouteHistory>() ? sl<RouteHistory>().last : null,
+            currentUserId: authViewModel.currentUser?.id,
+          );
+
+          AppRouter.go(redirect);
         }
       });
     }

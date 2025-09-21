@@ -46,9 +46,16 @@ class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
           token: AuthTokenModel(
             accessToken: 'default-token',
             refreshToken: 'default-refresh',
-            expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+            expiresAt: DateTime.now()
+                .add(const Duration(hours: 1))
+                .toIso8601String(),
           ),
-          user: UserModel(id: 'default-user', email: request.email, name: 'Default User', createdAt: DateTime.now().toIso8601String()),
+          user: UserModel(
+            id: 'default-user',
+            email: request.email,
+            name: 'Default User',
+            createdAt: DateTime.now().toIso8601String(),
+          ),
         );
   }
 
@@ -64,9 +71,16 @@ class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
       token: AuthTokenModel(
         accessToken: 'register-token',
         refreshToken: 'register-refresh',
-        expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+        expiresAt: DateTime.now()
+            .add(const Duration(hours: 1))
+            .toIso8601String(),
       ),
-      user: UserModel(id: 'register-user', email: request.email, name: request.name, createdAt: DateTime.now().toIso8601String()),
+      user: UserModel(
+        id: 'register-user',
+        email: request.email,
+        name: request.name,
+        createdAt: DateTime.now().toIso8601String(),
+      ),
     );
   }
 
@@ -78,7 +92,12 @@ class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
   @override
   Future<UserModel> getCurrentUser(String accessToken) async {
     callCount++;
-    return UserModel(id: 'current-user', email: 'current@example.com', name: 'Current User', createdAt: DateTime.now().toIso8601String());
+    return UserModel(
+      id: 'current-user',
+      email: 'current@example.com',
+      name: 'Current User',
+      createdAt: DateTime.now().toIso8601String(),
+    );
   }
 
   @override
@@ -180,49 +199,67 @@ void main() {
     setUp(() {
       fakeRemoteDataSource = FakeAuthRemoteDataSource();
       fakeLocalDataSource = FakeAuthLocalDataSource();
-      repository = AuthRepositoryImpl(remoteDataSource: fakeRemoteDataSource, localDataSource: fakeLocalDataSource);
+      repository = AuthRepositoryImpl(
+        remoteDataSource: fakeRemoteDataSource,
+        localDataSource: fakeLocalDataSource,
+      );
     });
 
     group('Login Tests', () {
-      test('should return success and store data locally when remote login succeeds', () async {
-        // Arrange
-        final email = Email.create('test@example.com');
-        final password = Password.create('password123');
+      test(
+        'should return success and store data locally when remote login succeeds',
+        () async {
+          // Arrange
+          final email = Email.create('test@example.com');
+          final password = Password.create('password123');
 
-        final expectedResponse = AuthResponse(
-          token: AuthTokenModel(
-            accessToken: 'login-token',
-            refreshToken: 'login-refresh',
-            expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
-          ),
-          user: UserModel(id: 'login-user', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now().toIso8601String()),
-        );
+          final expectedResponse = AuthResponse(
+            token: AuthTokenModel(
+              accessToken: 'login-token',
+              refreshToken: 'login-refresh',
+              expiresAt: DateTime.now()
+                  .add(const Duration(hours: 1))
+                  .toIso8601String(),
+            ),
+            user: UserModel(
+              id: 'login-user',
+              email: 'test@example.com',
+              name: 'Test User',
+              createdAt: DateTime.now().toIso8601String(),
+            ),
+          );
 
-        fakeRemoteDataSource.setMockLoginResponse(expectedResponse);
+          fakeRemoteDataSource.setMockLoginResponse(expectedResponse);
 
-        // Act
-        final result = await repository.login(email, password);
+          // Act
+          final result = await repository.login(email, password);
 
-        // Assert
-        expect(result, isA<Success<AuthToken>>());
-        if (result is Success<AuthToken>) {
-          expect(result.data.accessToken, equals('login-token'));
-          expect(result.data.refreshToken, equals('login-refresh'));
-        }
+          // Assert
+          expect(result, isA<Success<AuthToken>>());
+          if (result is Success<AuthToken>) {
+            expect(result.data.accessToken, equals('login-token'));
+            expect(result.data.refreshToken, equals('login-refresh'));
+          }
 
-        // Verify remote was called
-        expect(fakeRemoteDataSource.callCount, equals(1));
+          // Verify remote was called
+          expect(fakeRemoteDataSource.callCount, equals(1));
 
-        // Verify local storage was called
-        expect(fakeLocalDataSource.callCount, equals(2)); // storeToken + storeUser
-      });
+          // Verify local storage was called
+          expect(
+            fakeLocalDataSource.callCount,
+            equals(2),
+          ); // storeToken + storeUser
+        },
+      );
 
       test('should return failure when remote login fails', () async {
         // Arrange
         final email = Email.create('test@example.com');
         final password = Password.create('password123');
 
-        fakeRemoteDataSource.setThrowException(AuthenticationError('Invalid credentials'));
+        fakeRemoteDataSource.setThrowException(
+          AuthenticationError('Invalid credentials'),
+        );
 
         // Act
         final result = await repository.login(email, password);
@@ -250,9 +287,16 @@ void main() {
           token: AuthTokenModel(
             accessToken: 'login-token',
             refreshToken: 'login-refresh',
-            expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+            expiresAt: DateTime.now()
+                .add(const Duration(hours: 1))
+                .toIso8601String(),
           ),
-          user: UserModel(id: 'login-user', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now().toIso8601String()),
+          user: UserModel(
+            id: 'login-user',
+            email: 'test@example.com',
+            name: 'Test User',
+            createdAt: DateTime.now().toIso8601String(),
+          ),
         );
 
         fakeRemoteDataSource.setMockLoginResponse(expectedResponse);
@@ -274,7 +318,9 @@ void main() {
         final email = Email.create('test@example.com');
         final password = Password.create('password123');
 
-        fakeRemoteDataSource.setThrowException(NetworkError('No internet connection'));
+        fakeRemoteDataSource.setThrowException(
+          NetworkError('No internet connection'),
+        );
 
         // Act
         final result = await repository.login(email, password);
@@ -292,7 +338,9 @@ void main() {
         final email = Email.create('test@example.com');
         final password = Password.create('password123');
 
-        fakeRemoteDataSource.setThrowException(ServerError('Internal server error', 500));
+        fakeRemoteDataSource.setThrowException(
+          ServerError('Internal server error', 500),
+        );
 
         // Act
         final result = await repository.login(email, password);
@@ -327,7 +375,10 @@ void main() {
 
         // Verify calls were made
         expect(fakeRemoteDataSource.callCount, equals(1));
-        expect(fakeLocalDataSource.callCount, equals(2)); // storeToken + storeUser
+        expect(
+          fakeLocalDataSource.callCount,
+          equals(2),
+        ); // storeToken + storeUser
       });
 
       test('should handle duplicate email registration', () async {
@@ -336,7 +387,9 @@ void main() {
         final password = Password.create('password123');
         final name = Name.create('Existing User');
 
-        fakeRemoteDataSource.setThrowException(ValidationError('Email already exists'));
+        fakeRemoteDataSource.setThrowException(
+          ValidationError('Email already exists'),
+        );
 
         // Act
         final result = await repository.register(email, password, name);
@@ -356,7 +409,9 @@ void main() {
         final storedToken = AuthTokenModel(
           accessToken: 'stored-token',
           refreshToken: 'stored-refresh',
-          expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+          expiresAt: DateTime.now()
+              .add(const Duration(hours: 1))
+              .toIso8601String(),
         );
         fakeLocalDataSource._storedToken = storedToken;
 
@@ -370,7 +425,10 @@ void main() {
         expect(fakeRemoteDataSource.callCount, equals(1));
 
         // Verify local data was cleared
-        expect(fakeLocalDataSource.callCount, equals(2)); // getStoredToken + clearAuthData
+        expect(
+          fakeLocalDataSource.callCount,
+          equals(2),
+        ); // getStoredToken + clearAuthData
       });
       test('should clear local data even when remote logout fails', () async {
         // Arrange
@@ -383,7 +441,10 @@ void main() {
         expect(result, isA<Success<void>>());
 
         // Verify local data was still cleared
-        expect(fakeLocalDataSource.callCount, equals(2)); // getStoredToken + clearAuthData
+        expect(
+          fakeLocalDataSource.callCount,
+          equals(2),
+        ); // getStoredToken + clearAuthData
       });
     });
 
@@ -393,7 +454,9 @@ void main() {
         final storedToken = AuthTokenModel(
           accessToken: 'stored-token',
           refreshToken: 'stored-refresh',
-          expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+          expiresAt: DateTime.now()
+              .add(const Duration(hours: 1))
+              .toIso8601String(),
         );
 
         fakeLocalDataSource._storedToken = storedToken;
@@ -435,7 +498,9 @@ void main() {
         final expiredToken = AuthTokenModel(
           accessToken: 'expired-token',
           refreshToken: 'expired-refresh',
-          expiresAt: DateTime.now().subtract(const Duration(hours: 1)).toIso8601String(),
+          expiresAt: DateTime.now()
+              .subtract(const Duration(hours: 1))
+              .toIso8601String(),
         );
 
         fakeLocalDataSource._storedToken = expiredToken;
@@ -458,7 +523,9 @@ void main() {
         final validToken = AuthTokenModel(
           accessToken: 'valid-token',
           refreshToken: 'valid-refresh',
-          expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+          expiresAt: DateTime.now()
+              .add(const Duration(hours: 1))
+              .toIso8601String(),
         );
 
         fakeLocalDataSource._storedToken = validToken;
@@ -486,7 +553,9 @@ void main() {
         final expiredToken = AuthTokenModel(
           accessToken: 'expired-token',
           refreshToken: 'expired-refresh',
-          expiresAt: DateTime.now().subtract(const Duration(hours: 1)).toIso8601String(),
+          expiresAt: DateTime.now()
+              .subtract(const Duration(hours: 1))
+              .toIso8601String(),
         );
 
         fakeLocalDataSource._storedToken = expiredToken;
@@ -502,7 +571,11 @@ void main() {
     group('Token Management Tests', () {
       test('should store and retrieve token correctly', () async {
         // Arrange
-        final token = AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+        final token = AuthToken(
+          accessToken: 'test-token',
+          refreshToken: 'test-refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        );
 
         // Act - Store token
         await repository.storeToken(token);
@@ -538,7 +611,9 @@ void main() {
       test('should handle refresh token failure', () async {
         // Arrange
         const oldRefreshToken = 'invalid-refresh-token';
-        fakeRemoteDataSource.setThrowException(AuthenticationError('Invalid refresh token'));
+        fakeRemoteDataSource.setThrowException(
+          AuthenticationError('Invalid refresh token'),
+        );
 
         // Act
         final result = await repository.refreshToken(oldRefreshToken);
@@ -553,31 +628,34 @@ void main() {
     });
 
     group('Data Consistency Tests', () {
-      test('should maintain data consistency across multiple operations', () async {
-        // Arrange
-        final email = Email.create('consistency@example.com');
-        final password = Password.create('password123');
+      test(
+        'should maintain data consistency across multiple operations',
+        () async {
+          // Arrange
+          final email = Email.create('consistency@example.com');
+          final password = Password.create('password123');
 
-        // Act 1: Login
-        final loginResult = await repository.login(email, password);
-        expect(loginResult, isA<Success<AuthToken>>());
+          // Act 1: Login
+          final loginResult = await repository.login(email, password);
+          expect(loginResult, isA<Success<AuthToken>>());
 
-        // Act 2: Check authentication
-        final isAuth1 = await repository.isAuthenticated();
-        expect(isAuth1, isTrue);
+          // Act 2: Check authentication
+          final isAuth1 = await repository.isAuthenticated();
+          expect(isAuth1, isTrue);
 
-        // Act 3: Get current user
-        final userResult = await repository.getCurrentUser();
-        expect(userResult, isA<Success<User>>());
+          // Act 3: Get current user
+          final userResult = await repository.getCurrentUser();
+          expect(userResult, isA<Success<User>>());
 
-        // Act 4: Logout
-        final logoutResult = await repository.logout();
-        expect(logoutResult, isA<Success<void>>());
+          // Act 4: Logout
+          final logoutResult = await repository.logout();
+          expect(logoutResult, isA<Success<void>>());
 
-        // Act 5: Check authentication after logout
-        final isAuth2 = await repository.isAuthenticated();
-        expect(isAuth2, isFalse);
-      });
+          // Act 5: Check authentication after logout
+          final isAuth2 = await repository.isAuthenticated();
+          expect(isAuth2, isFalse);
+        },
+      );
 
       test('should handle concurrent operations safely', () async {
         // Arrange
@@ -585,7 +663,11 @@ void main() {
         final password = Password.create('password123');
 
         // Act - Multiple concurrent operations
-        final futures = [repository.login(email, password), repository.isAuthenticated(), repository.getStoredToken()];
+        final futures = [
+          repository.login(email, password),
+          repository.isAuthenticated(),
+          repository.getStoredToken(),
+        ];
 
         final results = await Future.wait(futures);
 
@@ -606,12 +688,19 @@ void main() {
     setUp(() {
       fakeRemoteDataSource = FakeAuthRemoteDataSource();
       fakeLocalDataSource = FakeAuthLocalDataSource();
-      repository = AuthRepositoryImpl(remoteDataSource: fakeRemoteDataSource, localDataSource: fakeLocalDataSource);
+      repository = AuthRepositoryImpl(
+        remoteDataSource: fakeRemoteDataSource,
+        localDataSource: fakeLocalDataSource,
+      );
     });
 
     test('should handle malformed token data', () async {
       // Arrange
-      final malformedToken = AuthTokenModel(accessToken: '', refreshToken: '', expiresAt: 'invalid-date');
+      final malformedToken = AuthTokenModel(
+        accessToken: '',
+        refreshToken: '',
+        expiresAt: 'invalid-date',
+      );
 
       fakeLocalDataSource._storedToken = malformedToken;
 
@@ -638,7 +727,9 @@ void main() {
       final email = Email.create('test@example.com');
       final password = Password.create('password123');
 
-      fakeRemoteDataSource.setThrowException(Exception('Unexpected response format'));
+      fakeRemoteDataSource.setThrowException(
+        Exception('Unexpected response format'),
+      );
 
       // Act
       final result = await repository.login(email, password);
@@ -657,7 +748,9 @@ void main() {
       final largeToken = AuthTokenModel(
         accessToken: largeTokenData,
         refreshToken: largeTokenData,
-        expiresAt: DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+        expiresAt: DateTime.now()
+            .add(const Duration(hours: 1))
+            .toIso8601String(),
       );
 
       // Act & Assert - Should not crash

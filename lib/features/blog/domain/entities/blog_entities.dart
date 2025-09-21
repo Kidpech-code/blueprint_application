@@ -110,7 +110,13 @@ class BlogCategory extends Equatable {
   final String? description;
   final int postCount;
 
-  const BlogCategory({required this.id, required this.name, required this.slug, this.description, required this.postCount});
+  const BlogCategory({
+    required this.id,
+    required this.name,
+    required this.slug,
+    this.description,
+    required this.postCount,
+  });
 
   @override
   List<Object?> get props => [id, name, slug, description, postCount];
@@ -141,5 +147,15 @@ class BlogComment extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, postId, authorId, authorName, authorAvatar, content, createdAt, parentId, replies];
+  List<Object?> get props => [
+    id,
+    postId,
+    authorId,
+    authorName,
+    authorAvatar,
+    content,
+    createdAt,
+    parentId,
+    replies,
+  ];
 }

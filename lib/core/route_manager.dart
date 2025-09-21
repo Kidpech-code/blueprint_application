@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'dependency_injection.dart';
+import 'route_history.dart';
 
 // Import feature routes
 import '../features/auth/presentation/routes/auth_routes.dart';
@@ -41,10 +43,17 @@ class AppRouter {
 
   // Navigation helper methods
   static void go(String location) {
+    // Update route history (will ignore auth paths internally)
+    try {
+      if (sl.isRegistered<RouteHistory>()) sl<RouteHistory>().update(location);
+    } catch (_) {}
     _router.go(location);
   }
 
   static void push(String location) {
+    try {
+      if (sl.isRegistered<RouteHistory>()) sl<RouteHistory>().update(location);
+    } catch (_) {}
     _router.push(location);
   }
 
@@ -53,6 +62,9 @@ class AppRouter {
   }
 
   static void replace(String location) {
+    try {
+      if (sl.isRegistered<RouteHistory>()) sl<RouteHistory>().update(location);
+    } catch (_) {}
     _router.pushReplacement(location);
   }
 

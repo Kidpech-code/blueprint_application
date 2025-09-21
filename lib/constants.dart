@@ -109,11 +109,32 @@ class UIConstants {
   static const double progressIndicatorStrokeWidth = 4.0;
 
   // Shadow
-  static const List<BoxShadow> shadowLow = [BoxShadow(color: Color(0x1A000000), offset: Offset(0, 1), blurRadius: 3, spreadRadius: 0)];
+  static const List<BoxShadow> shadowLow = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      offset: Offset(0, 1),
+      blurRadius: 3,
+      spreadRadius: 0,
+    ),
+  ];
 
-  static const List<BoxShadow> shadowMedium = [BoxShadow(color: Color(0x1A000000), offset: Offset(0, 4), blurRadius: 8, spreadRadius: 0)];
+  static const List<BoxShadow> shadowMedium = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      offset: Offset(0, 4),
+      blurRadius: 8,
+      spreadRadius: 0,
+    ),
+  ];
 
-  static const List<BoxShadow> shadowHigh = [BoxShadow(color: Color(0x1A000000), offset: Offset(0, 8), blurRadius: 16, spreadRadius: 0)];
+  static const List<BoxShadow> shadowHigh = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      offset: Offset(0, 8),
+      blurRadius: 16,
+      spreadRadius: 0,
+    ),
+  ];
 
   // Gradient
   static const LinearGradient primaryGradient = LinearGradient(
@@ -200,7 +221,8 @@ class AssetConstants {
   static const String imagePath = 'assets/images';
   static const String logoPath = '$imagePath/logo.png';
   static const String placeholderPath = '$imagePath/placeholder.png';
-  static const String avatarPlaceholderPath = '$imagePath/avatar_placeholder.png';
+  static const String avatarPlaceholderPath =
+      '$imagePath/avatar_placeholder.png';
   static const String emptyStatePath = '$imagePath/empty_state.png';
   static const String errorStatePath = '$imagePath/error_state.png';
 

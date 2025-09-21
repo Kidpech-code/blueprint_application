@@ -262,6 +262,61 @@ AppRouter.goToProfile('user-456', tab: 'posts');
 
 ## 🧪 Testing Strategy
 
+## 🔁 Redirect after login (returning users to previous page)
+
+When your app needs the user to authenticate (for example when a token expires), it's often desirable to return them to the page they were viewing after successful login.
+
+How it works in this project:
+
+- Triggering a redirect: navigate to the login route with an optional redirect query parameter. Example:
+
+  AppRouter.go('/auth/login?redirect=${Uri.encodeComponent(currentLocation)}');
+
+- Automatic history-based fallback: The app keeps a small `RouteHistory` service that records the last non-auth location whenever `AppRouter.go`, `push`, or `replace` are used. If no explicit `redirect` query param is present, the app will use the last recorded location.
+
+- Final fallbacks:
+  1. `widget.redirectTo` (decoded and validated)
+  2. `RouteHistory.last` (if present and valid)
+  3. `/profile/<userId>` if the current user is known
+  4. `/` as the last fallback
+
+Security and validation:
+
+- The resolver rejects full URLs (contains `://`) to prevent open-redirect vulnerabilities.
+- Redirects must be internal paths starting with `/`.
+- Redirects to auth routes (paths starting with `/auth`) are rejected to avoid redirect loops.
+
+Integration points:
+
+- `AuthInterceptor` (Dio): detects 401 responses and redirects to `/auth/login?redirect=<encoded-last>` after logging out.
+- `LoginView`: accepts an optional `redirectTo` parameter from the router and uses a resolver utility to choose a safe redirect target after successful login.
+
+See `docs/redirect_after_login.md` for a detailed description and examples.
+
+For a more comprehensive guide (Thai) with examples, testing tips, and troubleshooting, see `docs/redirect_after_login_expanded.md`.
+
+Quick examples
+
+- From UI (use current route):
+
+```dart
+// Capture current location from the router and send to login
+final current = AppRouter.router.location;
+AppRouter.go('/auth/login?redirect=${Uri.encodeComponent(current)}');
+```
+
+- From network handling / interceptor (use RouteHistory):
+
+```dart
+// RouteHistory stores last non-auth location; call login with that redirect
+final last = sl.isRegistered<RouteHistory>() ? sl<RouteHistory>().last : null;
+if (last != null) {
+  AppRouter.go('/auth/login?redirect=${Uri.encodeComponent(last)}');
+} else {
+  AppRouter.go('/auth/login');
+}
+```
+
 ### 🏆 **Complete Test Coverage - 161/161 Tests Passing (100% Success Rate)**
 
 Comprehensive unit testing examples with Thai documentation covering all architectural layers:

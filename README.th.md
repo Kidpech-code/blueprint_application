@@ -309,6 +309,37 @@ void _initAuthFeature() {
 
 ## 🔍 การวิเคราะห์ฟีเจอร์แบบเจาะลึก: Authentication
 
+## 🔁 การย้อนกลับหลังล็อกอิน (Redirect after login)
+
+เมื่อแอปต้องการให้ผู้ใช้ล็อกอิน (เช่น token หมดอายุ) เราต้องการให้ผู้ใช้กลับไปยังหน้าที่กำลังดูหลังจากล็อกอินสำเร็จ
+
+กลไกภายในโปรเจกต์นี้:
+
+- การเรียก redirect: นำทางไปที่หน้า login พร้อม query param `redirect` ตัวอย่าง:
+
+  AppRouter.go('/auth/login?redirect=${Uri.encodeComponent(currentLocation)}');
+
+- หากไม่มี `redirect` param ระบบจะใช้ `RouteHistory` ซึ่งบันทึกหน้าล่าสุด (ที่ไม่ใช่หน้าของ /auth) โดย `AppRouter.go/push/replace` จะอัปเดตค่านี้
+
+- ลำดับการเลือกเป้าหมายหลังล็อกอิน:
+  1. `widget.redirectTo` (ถ้ามี, จะ decode และ validate)
+  2. `RouteHistory.last` (ถ้ามีและถูกต้อง)
+  3. `/profile/<userId>` ถ้ามีข้อมูลผู้ใช้
+  4. `/` เป็น fallback สุดท้าย
+
+ความปลอดภัย:
+
+- ปฏิเสธ redirect ที่เป็น full URL (มี `://`) เพื่อป้องกัน open redirect
+- ต้องเป็น path ภายในที่ขึ้นต้นด้วย `/`
+- ปฏิเสธ path ที่เริ่มด้วย `/auth` เพื่อป้องกัน loop
+
+Integration:
+
+- `AuthInterceptor` จะจับ 401 และ redirect ไป `/auth/login?redirect=<encoded-last>`
+- `LoginView` รับ `redirectTo` เป็น parameter และใช้ resolver ในการเลือกเป้าหมายปลอดภัยหลังล็อกอิน
+
+ดู `docs/redirect_after_login.md` สำหรับคำอธิบายและตัวอย่างเพิ่มเติม
+
 ### 🔐 ภาพรวมของ Auth Feature
 
 Authentication เป็นฟีเจอร์ที่แสดงให้เห็นการใช้งานสถาปัตยกรรม MVVM+DDD อย่างครบถ้วน เพราะมีความซับซ้อนของ business logic, data persistence, และ UI interaction

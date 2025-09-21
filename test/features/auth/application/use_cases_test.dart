@@ -77,14 +77,27 @@ class FakeAuthRepository implements AuthRepository {
 
   @override
   Future<Result<User>> getCurrentUser() async {
-    final user = User(id: 'test-user-id', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now());
+    final user = User(
+      id: 'test-user-id',
+      email: 'test@example.com',
+      name: 'Test User',
+      createdAt: DateTime.now(),
+    );
     return Success(user);
   }
 
   @override
-  Future<Result<AuthToken>> register(Email email, Password password, Name name) async {
+  Future<Result<AuthToken>> register(
+    Email email,
+    Password password,
+    Name name,
+  ) async {
     callCount++;
-    final token = AuthToken(accessToken: 'register-token', refreshToken: 'register-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+    final token = AuthToken(
+      accessToken: 'register-token',
+      refreshToken: 'register-refresh',
+      expiresAt: DateTime.now().add(const Duration(hours: 1)),
+    );
     return Success(token);
   }
 
@@ -192,7 +205,10 @@ void main() {
       expect(result, isA<Failure<AuthToken>>());
       if (result is Failure<AuthToken>) {
         expect(result.error, isA<ValidationError>());
-        expect(result.error.message, contains('Password must be at least 8 characters long'));
+        expect(
+          result.error.message,
+          contains('Password must be at least 8 characters long'),
+        );
       }
       // Repository should not be called due to validation failure
       expect(fakeRepository.callCount, equals(0));
@@ -318,12 +334,19 @@ void main() {
 
     test('should handle concurrent login calls', () async {
       // Arrange
-      final token1 = AuthToken(accessToken: 'token1', refreshToken: 'refresh1', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+      final token1 = AuthToken(
+        accessToken: 'token1',
+        refreshToken: 'refresh1',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      );
 
       fakeRepository.setMockResult(Success(token1));
 
       // Act - Call login multiple times concurrently
-      final futures = List.generate(3, (_) => loginUseCase.call('test@example.com', 'password123'));
+      final futures = List.generate(
+        3,
+        (_) => loginUseCase.call('test@example.com', 'password123'),
+      );
       final results = await Future.wait(futures);
 
       // Assert
@@ -336,14 +359,21 @@ void main() {
 
     test('should handle rapid successive calls', () async {
       // Arrange
-      final token = AuthToken(accessToken: 'rapid-token', refreshToken: 'rapid-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+      final token = AuthToken(
+        accessToken: 'rapid-token',
+        refreshToken: 'rapid-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      );
 
       fakeRepository.setMockResult(Success(token));
 
       // Act - Call login rapidly
       final results = <Result<AuthToken>>[];
       for (int i = 0; i < 5; i++) {
-        final result = await loginUseCase.call('test@example.com', 'password123');
+        final result = await loginUseCase.call(
+          'test@example.com',
+          'password123',
+        );
         results.add(result);
       }
 
@@ -367,15 +397,24 @@ void main() {
 
       // Act & Assert
       // Valid credentials
-      final validResult = await loginUseCase.call('test@example.com', 'password123');
+      final validResult = await loginUseCase.call(
+        'test@example.com',
+        'password123',
+      );
       expect(validResult, isA<Success<AuthToken>>());
 
       // Invalid email
-      final invalidEmailResult = await loginUseCase.call('invalid-email', 'password123');
+      final invalidEmailResult = await loginUseCase.call(
+        'invalid-email',
+        'password123',
+      );
       expect(invalidEmailResult, isA<Failure<AuthToken>>());
 
       // Invalid password
-      final invalidPasswordResult = await loginUseCase.call('test@example.com', '123');
+      final invalidPasswordResult = await loginUseCase.call(
+        'test@example.com',
+        '123',
+      );
       expect(invalidPasswordResult, isA<Failure<AuthToken>>());
 
       // Only valid call should reach repository
@@ -384,24 +423,43 @@ void main() {
 
     test('should handle repository state changes between calls', () async {
       // Arrange
-      final token1 = AuthToken(accessToken: 'token1', refreshToken: 'refresh1', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+      final token1 = AuthToken(
+        accessToken: 'token1',
+        refreshToken: 'refresh1',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      );
 
-      final token2 = AuthToken(accessToken: 'token2', refreshToken: 'refresh2', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+      final token2 = AuthToken(
+        accessToken: 'token2',
+        refreshToken: 'refresh2',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      );
 
       // Act & Assert
       // First call succeeds
       fakeRepository.setMockResult(Success(token1));
-      final result1 = await loginUseCase.call('test@example.com', 'password123');
+      final result1 = await loginUseCase.call(
+        'test@example.com',
+        'password123',
+      );
       expect(result1, isA<Success<AuthToken>>());
 
       // Second call fails
-      fakeRepository.setMockResult(Failure(AuthenticationError('Account locked')));
-      final result2 = await loginUseCase.call('test@example.com', 'password123');
+      fakeRepository.setMockResult(
+        Failure(AuthenticationError('Account locked')),
+      );
+      final result2 = await loginUseCase.call(
+        'test@example.com',
+        'password123',
+      );
       expect(result2, isA<Failure<AuthToken>>());
 
       // Third call succeeds again
       fakeRepository.setMockResult(Success(token2));
-      final result3 = await loginUseCase.call('test@example.com', 'password123');
+      final result3 = await loginUseCase.call(
+        'test@example.com',
+        'password123',
+      );
       expect(result3, isA<Success<AuthToken>>());
 
       expect(fakeRepository.callCount, equals(3));
@@ -414,55 +472,90 @@ void main() {
       final fakeRepository = FakeAuthRepository();
       final loginUseCase = LoginUseCase(fakeRepository);
 
-      final validEmails = ['user@domain.com', 'test.email@example.org', 'user+tag@gmail.com'];
+      final validEmails = [
+        'user@domain.com',
+        'test.email@example.org',
+        'user+tag@gmail.com',
+      ];
 
-      final invalidEmails = ['plainaddress', '@missingdomain.com', 'missing@domain'];
+      final invalidEmails = [
+        'plainaddress',
+        '@missingdomain.com',
+        'missing@domain',
+      ];
 
-      final token = AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+      final token = AuthToken(
+        accessToken: 'test-token',
+        refreshToken: 'test-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      );
 
       fakeRepository.setMockResult(Success(token));
 
       // Act & Assert valid emails
       for (final email in validEmails) {
         final result = await loginUseCase.call(email, 'password123');
-        expect(result, isA<Success<AuthToken>>(), reason: 'Should accept valid email: $email');
+        expect(
+          result,
+          isA<Success<AuthToken>>(),
+          reason: 'Should accept valid email: $email',
+        );
       }
 
       // Act & Assert invalid emails
       for (final email in invalidEmails) {
         final result = await loginUseCase.call(email, 'password123');
-        expect(result, isA<Failure<AuthToken>>(), reason: 'Should reject invalid email: $email');
+        expect(
+          result,
+          isA<Failure<AuthToken>>(),
+          reason: 'Should reject invalid email: $email',
+        );
       }
     });
 
-    test('should properly validate password requirements through use case', () async {
-      // Arrange
-      final fakeRepository = FakeAuthRepository();
-      final loginUseCase = LoginUseCase(fakeRepository);
+    test(
+      'should properly validate password requirements through use case',
+      () async {
+        // Arrange
+        final fakeRepository = FakeAuthRepository();
+        final loginUseCase = LoginUseCase(fakeRepository);
 
-      final validPasswords = ['password1', 'mySecret123', 'c0mpl3xP@ss'];
+        final validPasswords = ['password1', 'mySecret123', 'c0mpl3xP@ss'];
 
-      final invalidPasswords = [
-        'short1', // Too short
-        'password', // No numbers
-        '12345678', // No letters
-      ];
+        final invalidPasswords = [
+          'short1', // Too short
+          'password', // No numbers
+          '12345678', // No letters
+        ];
 
-      final token = AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+        final token = AuthToken(
+          accessToken: 'test-token',
+          refreshToken: 'test-refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        );
 
-      fakeRepository.setMockResult(Success(token));
+        fakeRepository.setMockResult(Success(token));
 
-      // Act & Assert valid passwords
-      for (final password in validPasswords) {
-        final result = await loginUseCase.call('test@example.com', password);
-        expect(result, isA<Success<AuthToken>>(), reason: 'Should accept valid password: $password');
-      }
+        // Act & Assert valid passwords
+        for (final password in validPasswords) {
+          final result = await loginUseCase.call('test@example.com', password);
+          expect(
+            result,
+            isA<Success<AuthToken>>(),
+            reason: 'Should accept valid password: $password',
+          );
+        }
 
-      // Act & Assert invalid passwords
-      for (final password in invalidPasswords) {
-        final result = await loginUseCase.call('test@example.com', password);
-        expect(result, isA<Failure<AuthToken>>(), reason: 'Should reject invalid password: $password');
-      }
-    });
+        // Act & Assert invalid passwords
+        for (final password in invalidPasswords) {
+          final result = await loginUseCase.call('test@example.com', password);
+          expect(
+            result,
+            isA<Failure<AuthToken>>(),
+            reason: 'Should reject invalid password: $password',
+          );
+        }
+      },
+    );
   });
 }

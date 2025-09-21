@@ -34,7 +34,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
         location: profile.location,
       );
 
-      final profileModel = await remoteDataSource.updateProfile(profile.userId, request);
+      final profileModel = await remoteDataSource.updateProfile(
+        profile.userId,
+        request,
+      );
       return Success(profileModel.toEntity());
     } on AppError catch (e) {
       return Failure(e);
@@ -56,9 +59,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<String>> uploadProfileImage(String userId, String imagePath) async {
+  Future<Result<String>> uploadProfileImage(
+    String userId,
+    String imagePath,
+  ) async {
     try {
-      final imageUrl = await remoteDataSource.uploadProfileImage(userId, imagePath);
+      final imageUrl = await remoteDataSource.uploadProfileImage(
+        userId,
+        imagePath,
+      );
       return Success(imageUrl);
     } on AppError catch (e) {
       return Failure(e);
@@ -68,9 +77,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<String>> uploadCoverImage(String userId, String imagePath) async {
+  Future<Result<String>> uploadCoverImage(
+    String userId,
+    String imagePath,
+  ) async {
     try {
-      final imageUrl = await remoteDataSource.uploadCoverImage(userId, imagePath);
+      final imageUrl = await remoteDataSource.uploadCoverImage(
+        userId,
+        imagePath,
+      );
       return Success(imageUrl);
     } on AppError catch (e) {
       return Failure(e);
@@ -112,7 +127,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       // Note: In a real implementation, you would get the access token from auth repository
       const accessToken = 'dummy_token'; // This should come from AuthRepository
-      final isFollowing = await remoteDataSource.isFollowing(userId, accessToken);
+      final isFollowing = await remoteDataSource.isFollowing(
+        userId,
+        accessToken,
+      );
       return Success(isFollowing);
     } on AppError catch (e) {
       return Failure(e);
@@ -122,9 +140,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<List<Profile>>> getFollowers(String userId, {int page = 1, int limit = 20}) async {
+  Future<Result<List<Profile>>> getFollowers(
+    String userId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
     try {
-      final profileModels = await remoteDataSource.getFollowers(userId, page, limit);
+      final profileModels = await remoteDataSource.getFollowers(
+        userId,
+        page,
+        limit,
+      );
       final profiles = profileModels.map((model) => model.toEntity()).toList();
       return Success(profiles);
     } on AppError catch (e) {
@@ -135,9 +161,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<List<Profile>>> getFollowing(String userId, {int page = 1, int limit = 20}) async {
+  Future<Result<List<Profile>>> getFollowing(
+    String userId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
     try {
-      final profileModels = await remoteDataSource.getFollowing(userId, page, limit);
+      final profileModels = await remoteDataSource.getFollowing(
+        userId,
+        page,
+        limit,
+      );
       final profiles = profileModels.map((model) => model.toEntity()).toList();
       return Success(profiles);
     } on AppError catch (e) {
