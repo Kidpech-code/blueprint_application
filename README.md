@@ -1,416 +1,239 @@
-# Blueprint Application - Flutter MVVM+DDD Architecture Template
+# Blueprint Application Clean Architecture
 
-## 🎯 Overview
+---
 
-This is a comprehensive Flutter application template implementing **MVVM (Model-View-ViewModel)** architecture with **Domain-Driven Design (DDD)** principles. The template is designed to be flexible, modular, and maintainable, with clear separation of concerns for efficient team collaboration.
-
-## 🏗️ Architecture
-
-### Core Principles
-
-- **Clean Architecture**: Clear separation between domain, data, and presentation layers
-- **MVVM Pattern**: Model-View-ViewModel for reactive UI management
-- **Domain-Driven Design**: Business logic encapsulation and value objects
-- **Modular Structure**: Each feature has its own complete module
-- **Dependency Injection**: Service locator pattern with GetIt
-- **Complex Routing**: Advanced deeplink support with go_router
-
-### Layer Structure
+## Project Structure
 
 ```
 lib/
-├── core/                           # Shared infrastructure
-│   ├── dependency_injection.dart   # DI configuration
-│   ├── error_handling.dart        # Result type & error handling
-│   ├── route_manager.dart          # Global routing configuration
-│   └── utils.dart                  # Shared utilities
-├── features/                       # Feature modules
-│   ├── auth/                      # Authentication feature
-│   ├── profile/                   # User profile feature
-│   ├── blog/                      # Blog system feature
-│   └── common/                    # Shared UI components
-├── app.dart                       # Application widget & theme configuration
-├── config.dart                    # Application configuration & constants
-├── constants.dart                 # UI constants & design tokens
-└── main.dart                      # Application entry point
+  core/
+  data/
+    datasources/
+    models/
+    repositories/
+  domain/
+    entities/
+    repositories/
+    usecases/
+  presentation/
+    bloc/
+    pages/
+    widgets/
+  di/
+  main.dart
 ```
 
-## 🚀 Features
+- **domain**: Business logic (entities, repositories, usecases)
+- **data**: Data sources (API, local, models, repository implementation)
+- **presentation**: UI, state management (Riverpod/Bloc)
+- **di**: Dependency injection (Riverpod provider, GetIt)
+- **core**: Shared utilities, error, etc.
 
-### ✅ Complete Feature Modules
+---
 
-- **Authentication System**: Login, register, logout, token management
-- **User Profile Management**: Profile viewing, editing, stats, tabbed interface
-- **Blog System**: Post listing, detail view, complex date-based routing
-- **Shared Components**: Loading widgets, error views, common UI elements
+## How to Add a New Domain (e.g. Product)
 
-### 🛤️ Advanced Routing
+1. Create Entity: `lib/domain/entities/product.dart`
+2. Create Repository Interface: `lib/domain/repositories/product_repository.dart`
+3. Create Usecase: `lib/domain/usecases/get_product.dart`
+4. Create Model: `lib/data/models/product_model.dart`
+5. Create DataSource: `lib/data/datasources/product_remote_data_source.dart`
+6. Create Repository Implementation: `lib/data/repositories/product_repository_impl.dart`
+7. Register Providers in DI: `lib/di/injection.dart`
+8. Add Presentation Layer: bloc, page, widget
 
-- **Complex Deeplinks**: `/blog/2024/01/15/my-blog-post`
-- **Query Parameters**: Preview mode, pagination, filtering
-- **Event Booking**: `/event/123/booking?step=payment&coupon=SAVE20`
-- **Nested Navigation**: Tab-based profile navigation
+---
 
-### 🎨 UI/UX Features
+## Example: Adding a New Domain (Order)
 
-- **Material Design 3**: Modern UI with dynamic theming
-- **Dark Mode Support**: System-based theme switching
-- **Responsive Design**: Adaptive layouts for different screen sizes
-- **Loading States**: Comprehensive loading and error handling
-- **Infinite Scrolling**: Performance-optimized list views
-
-## 📁 Feature Module Structure
-
-Each feature follows the same modular structure:
+### File Structure for Order Domain
 
 ```
-features/[feature_name]/
-├── domain/                         # Business logic layer
-│   ├── entities/                   # Core business objects
-│   ├── value_objects/             # Domain value objects
-│   └── repositories/              # Repository interfaces
-├── data/                          # Data access layer
-│   ├── models/                    # Data transfer objects
-│   ├── datasources/               # Remote & local data sources
-│   └── repositories/              # Repository implementations
-├── application/                   # Use case layer
-│   └── usecases/                  # Business use cases
-└── presentation/                  # UI layer
-    ├── viewmodels/                # State management
-    ├── views/                     # UI screens
-    └── routes/                    # Feature routing
+lib/
+  domain/
+    entities/
+      order.dart
+    repositories/
+      order_repository.dart
+    usecases/
+      get_order.dart
+  data/
+    models/
+      order_model.dart
+    datasources/
+      order_remote_data_source.dart
+    repositories/
+      order_repository_impl.dart
+  presentation/
+    bloc/
+      order_notifier.dart
+    pages/
+      order_page.dart
+    widgets/
+      order_card.dart
+  di/
+    injection.dart (add providers for Order)
 ```
 
-## 🔧 Project Structure
+### Example Code for Order Domain
 
-### ✅ Clean Architecture Implementation
+#### 1. Entity
 
-- **`main.dart`**: Application entry point with dependency injection setup
-- **`app.dart`**: Main application widget with theme and routing configuration
-- **`config.dart`**: Centralized application configuration and environment settings
-- **`constants.dart`**: UI constants, design tokens, and asset management
-
-### 🎨 Theme & Design System
-
-- **Material Design 3** with comprehensive theming
-- **Design tokens** for consistent spacing, colors, and typography
-- **Dark mode support** with automatic system detection
-- **Responsive design** with breakpoint constants
-- **Animation curves** and duration constants
-
-### Core Dependencies
-
-```yaml
-dependencies:
-  flutter: sdk: flutter
-  provider: ^6.1.2              # State management
-  go_router: ^14.2.7            # Advanced routing
-  get_it: ^7.7.0               # Dependency injection
-  dio: ^5.4.3+1                # HTTP client
-  shared_preferences: ^2.2.3    # Local storage
-  json_annotation: ^4.9.0       # JSON serialization
-
-dev_dependencies:
-  build_runner: ^2.4.12         # Code generation
-  json_serializable: ^6.8.0     # JSON code generation
-```
-
-## 🏃‍♂️ Getting Started
-
-### 1. Clone & Setup
-
-```bash
-git clone <repository>
-cd blueprint_application
-flutter pub get
-```
-
-### 2. Generate Code
-
-```bash
-flutter packages pub run build_runner build
-```
-
-### 3. Run the Application
-
-```bash
-flutter run
-```
-
-## 🎭 Usage Examples
-
-### Adding a New Feature
-
-1. **Create Feature Structure**
-
-```bash
-mkdir -p lib/features/[feature_name]/{domain,data,application,presentation}/{entities,repositories,models,datasources,usecases,viewmodels,views,routes}
-```
-
-2. **Define Domain Layer**
+`lib/domain/entities/order.dart`
 
 ```dart
-// Domain Entity
-class Product {
+class Order {
   final String id;
-  final String name;
-  final Price price;
-
-  const Product({
-    required this.id,
-    required this.name,
-    required this.price,
-  });
-}
-
-// Value Object
-class Price {
-  final double value;
-  final String currency;
-
-  const Price({required this.value, required this.currency});
-
-  bool get isValid => value > 0;
+  final double total;
+  Order({required this.id, required this.total});
 }
 ```
 
-3. **Implement Repository Interface**
+#### 2. Repository Interface
+
+`lib/domain/repositories/order_repository.dart`
 
 ```dart
-abstract class ProductRepository {
-  Future<Result<List<Product>>> getProducts();
-  Future<Result<Product>> getProduct(String id);
-  Future<Result<void>> createProduct(Product product);
+import '../entities/order.dart';
+abstract class OrderRepository {
+  Future<Order> getOrder(String id);
 }
 ```
 
-4. **Create Use Cases**
+#### 3. Usecase
+
+`lib/domain/usecases/get_order.dart`
 
 ```dart
-class GetProductsUseCase {
-  final ProductRepository repository;
+import '../entities/order.dart';
+import '../repositories/order_repository.dart';
+class GetOrder {
+  final OrderRepository repository;
+  GetOrder(this.repository);
+  Future<Order> call(String id) => repository.getOrder(id);
+}
+```
 
-  GetProductsUseCase(this.repository);
+#### 4. Model
 
-  Future<Result<List<Product>>> call() async {
-    return await repository.getProducts();
+`lib/data/models/order_model.dart`
+
+```dart
+import '../../domain/entities/order.dart';
+class OrderModel extends Order {
+  OrderModel({required super.id, required super.total});
+  factory OrderModel.fromJson(Map<String, dynamic> json) =>
+      OrderModel(id: json['id'], total: (json['total'] as num).toDouble());
+  Map<String, dynamic> toJson() => {'id': id, 'total': total};
+}
+```
+
+#### 5. DataSource
+
+`lib/data/datasources/order_remote_data_source.dart`
+
+```dart
+import 'package:dio/dio.dart';
+import '../models/order_model.dart';
+abstract class OrderRemoteDataSource {
+  Future<OrderModel> fetchOrder(String id);
+}
+class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
+  final Dio dio;
+  OrderRemoteDataSourceImpl(this.dio);
+  @override
+  Future<OrderModel> fetchOrder(String id) async {
+    // final response = await dio.get('https://api.example.com/order/$id');
+    // return OrderModel.fromJson(response.data);
+    return OrderModel(id: id, total: 999.99);
   }
 }
 ```
 
-5. **Build ViewModel**
+#### 6. Repository Implementation
+
+`lib/data/repositories/order_repository_impl.dart`
 
 ```dart
-class ProductViewModel extends ChangeNotifier {
-  final GetProductsUseCase getProductsUseCase;
-
-  ProductViewModel({required this.getProductsUseCase});
-
-  List<Product> _products = [];
-  bool _isLoading = false;
-  String? _error;
-
-  List<Product> get products => _products;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  Future<void> loadProducts() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    final result = await getProductsUseCase();
-
-    result.when(
-      success: (products) {
-        _products = products;
-        _isLoading = false;
-        notifyListeners();
-      },
-      failure: (error) {
-        _error = error.toString();
-        _isLoading = false;
-        notifyListeners();
-      },
-    );
+import 'package:hive/hive.dart';
+import '../../domain/entities/order.dart';
+import '../../domain/repositories/order_repository.dart';
+import '../datasources/order_remote_data_source.dart';
+class OrderRepositoryImpl implements OrderRepository {
+  final OrderRemoteDataSource remoteDataSource;
+  final Box? cacheBox;
+  OrderRepositoryImpl(this.remoteDataSource, [this.cacheBox]);
+  @override
+  Future<Order> getOrder(String id) async {
+    if (cacheBox != null && cacheBox!.containsKey(id)) {
+      final cached = cacheBox!.get(id) as Map?;
+      if (cached != null) {
+        return Order(id: cached['id'], total: cached['total']);
+      }
+    }
+    final result = await remoteDataSource.fetchOrder(id);
+    if (cacheBox != null) {
+      await cacheBox!.put(id, result.toJson());
+    }
+    return result;
   }
 }
 ```
 
-### Complex Routing Examples
+#### 7. Providers in DI
+
+`lib/di/injection.dart`
 
 ```dart
-// Navigate to blog post with date-based URL
-AppRouter.goToBlogPost(
-  year: '2024',
-  month: '01',
-  day: '15',
-  slug: 'flutter-architecture-guide',
-  preview: true,
-);
-
-// Navigate to event booking with query parameters
-AppRouter.goToEventBooking(
-  'event-123',
-  step: 'payment',
-  coupon: 'SAVE20',
-);
-
-// Navigate to user profile with specific tab
-AppRouter.goToProfile('user-456', tab: 'posts');
+final orderRemoteDataSourceProvider = Provider<OrderRemoteDataSource>((ref) {
+  final dio = ref.watch(dioProvider);
+  return OrderRemoteDataSourceImpl(dio);
+});
+final orderRepositoryProvider = Provider<OrderRepository>((ref) {
+  final ds = ref.watch(orderRemoteDataSourceProvider);
+  final box = ref.watch(hiveBoxProvider).maybeWhen(data: (b) => b, orElse: () => null);
+  return OrderRepositoryImpl(ds, box);
+});
+final getOrderUseCaseProvider = Provider<GetOrder>((ref) {
+  final repo = ref.watch(orderRepositoryProvider);
+  return GetOrder(repo);
+});
 ```
 
-## 🧪 Testing Strategy
+#### 8. Presentation Layer
 
-### 🏆 **Complete Test Coverage - 161/161 Tests Passing (100% Success Rate)**
+- `lib/presentation/bloc/order_notifier.dart` (AsyncNotifier)
+- `lib/presentation/pages/order_page.dart` (ConsumerWidget)
+- `lib/presentation/widgets/order_card.dart` (StatelessWidget)
 
-Comprehensive unit testing examples with Thai documentation covering all architectural layers:
-
-### Unit Tests
-
-- **Domain Layer (30/30 ✅)**: Entities, value objects, business rules validation
-- **Application Layer (16/16 ✅)**: Use cases, business logic, repository integration
-- **Data Layer (24/24 ✅)**: Repository implementations, data source integration
-- **Presentation Layer (72/72 ✅)**: ViewModels, state management, async operations
-- **Widget Tests (1/1 ✅)**: UI components, dependency injection setup
-
-### Advanced Testing Features
-
-- **Async Operation Testing**: Comprehensive patterns for testing complex async workflows
-- **State Management Testing**: Complete ViewModel lifecycle and state transition testing
-- **Error Handling Testing**: Recovery scenarios and edge case handling
-- **Unicode Support Testing**: International character validation (Thai, Chinese, Japanese)
-- **Dependency Injection Testing**: GetIt service locator setup for widget tests
-
-### Testing Patterns Demonstrated
-
-- **Fake Implementations**: Preferred over mocking for reliability and maintainability
-- **Self-Contained Tests**: No external dependencies required
-- **Concurrent Operations**: Testing multiple simultaneous operations
-- **Edge Case Coverage**: Comprehensive validation testing with business rules
-- **Performance Testing**: Async timing and resource management patterns
-
-## 📈 Performance Optimizations
-
-### State Management
-
-- **Provider pattern** for reactive state updates
-- **Factory registration** for ViewModels to prevent memory leaks
-- **Lazy loading** for expensive dependencies
-
-### UI Performance
-
-- **Infinite scrolling** with pagination
-- **Image caching** for profile and blog images
-- **Debounced search** to reduce API calls
-- **Optimized list views** with builders
-
-### Network Layer
-
-- **Request/Response interceptors** for logging and debugging
-- **Automatic retry** for failed requests
-- **Timeout configuration** for better UX
-- **Error handling** with user-friendly messages
-
-## 🔒 Security Features
-
-### Authentication
-
-- **JWT token management** with automatic refresh
-- **Secure local storage** for sensitive data
-- **Logout cleanup** to clear all auth data
-- **Token expiration handling**
-
-### Data Protection
-
-- **Input validation** with value objects
-- **XSS prevention** in user-generated content
-- **API key protection** (not hardcoded)
-
-## 🚢 Deployment
-
-### Build Configuration
-
-```bash
-# Development
-flutter run --debug
-
-# Staging
-flutter run --profile
-
-# Production
-flutter build apk --release
-flutter build ios --release
-```
-
-### Environment Configuration
-
-```dart
-// Configure different API endpoints
-const String apiBaseUrl = String.fromEnvironment(
-  'API_BASE_URL',
-  defaultValue: 'https://api.example.com',
-);
-```
-
-## 🤝 Contributing
-
-### Code Style
-
-- Follow [Effective Dart](https://dart.dev/guides/language/effective-dart) guidelines
-- Use meaningful variable and function names
-- Document complex business logic
-- Write tests for new features
-
-### Feature Development Workflow
-
-1. Create feature branch from main
-2. Implement following the established architecture
-3. Write comprehensive tests
-4. Update documentation
-5. Submit pull request with clear description
-
-## 🏆 Benefits
-
-### For Development Teams
-
-- **Clear module boundaries** for parallel development
-- **Consistent patterns** across all features
-- **Easy onboarding** with documented structure
-- **Scalable architecture** for growing applications
-- **100% test coverage** with comprehensive examples
-- **Production-ready patterns** with proven testing strategies
-
-### For Business
-
-- **Faster feature delivery** with reusable components
-- **Lower maintenance costs** with clean architecture
-- **Better quality** with comprehensive error handling
-- **Future-proof** with modern Flutter patterns
-- **Reduced bugs** with extensive unit test coverage
-- **Reliable CI/CD** with stable test suite
-
-## 📚 Learning Resources
-
-### Architecture Patterns
-
-- [Clean Architecture by Robert Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html)
-- [MVVM in Flutter](https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple)
-
-### Flutter Best Practices
-
-- [Flutter Performance Best Practices](https://flutter.dev/docs/perf/rendering/best-practices)
-- [Flutter App Architecture](https://flutter.dev/docs/development/data-and-backend/architecting-app)
+You can copy the pattern from the example or user domain.
 
 ---
 
-## 📄 License
+## Example: Using Hive and Dio in Repository/DataSource
 
-This template is provided as-is for educational and commercial use. Feel free to modify and distribute according to your needs.
+- See `example_repository_impl.dart` and `example_remote_data_source.dart`
+- Repository: Read/write cache with Hive before/after remote call
+- DataSource: Use Dio to fetch data from API
 
 ---
 
-**Happy Coding! 🚀**
+## Notes
 
-_This template demonstrates enterprise-level Flutter development practices with a focus on maintainability, scalability, and team collaboration. Now featuring **100% test coverage** with comprehensive unit testing examples for all architectural layers._
+- Don't forget to register Hive adapters if using custom objects
+- Providers using async (e.g. hiveBoxProvider) must handle loading/error state
+- You can extend this pattern for any new domain
+
+---
+
+## Suggestion
+
+- Use Riverpod/Provider for DI and state management
+- Use go_router for navigation
+- Use dio for network and hive for local cache
+
+---
+
+## License
+
+MIT
