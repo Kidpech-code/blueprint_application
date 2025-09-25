@@ -237,3 +237,87 @@ You can copy the pattern from the example or user domain.
 ## License
 
 MIT
+
+---
+
+## Deep Dive: File/Folder Purpose & Relationships
+
+### Clean Architecture Diagram
+
+```mermaid
+flowchart TD
+  UI["Presentation Layer\n(pages, widgets, bloc)"]
+  UseCase["Domain Layer\n(usecases)"]
+  Entity["Domain Layer\n(entities)"]
+  RepoInterface["Domain Layer\n(repositories)"]
+  RepoImpl["Data Layer\n(repositories impl)"]
+  DataSource["Data Layer\n(datasources)"]
+  Model["Data Layer\n(models)"]
+  API["External: API (Dio)"]
+  Hive["External: Hive (Cache)"]
+  DI["DI (Provider)"]
+
+  UI -->|calls| UseCase
+  UseCase -->|calls| RepoInterface
+  RepoInterface <..> RepoImpl
+  RepoImpl -->|calls| DataSource
+  RepoImpl -->|uses| Model
+  DataSource -->|fetches| API
+  RepoImpl -->|caches| Hive
+  DataSource -->|returns| Model
+  Model <..> Entity
+  DI -.-> UI
+  DI -.-> UseCase
+  DI -.-> RepoImpl
+  DI -.-> DataSource
+```
+
+---
+
+### Folder/File Explanations
+
+- **lib/core/**
+
+  - `error/`: ข้อผิดพลาด, failure, exception handling
+  - `usecases/`: base class สำหรับ usecase (เช่น `UseCase<T, Params>`)
+  - `utils/`: ฟังก์ชัน/utility ที่ใช้ซ้ำได้
+
+- **lib/domain/**
+
+  - `entities/`: โครงสร้างข้อมูลหลัก (business object) ที่ไม่ขึ้นกับ framework
+  - `repositories/`: interface ของ repository (กำหนด method ที่ต้องมี)
+  - `usecases/`: ธุรกิจหลัก (เรียกผ่าน repository interface)
+
+- **lib/data/**
+
+  - `datasources/`: ติดต่อ API (Dio), local (Hive) หรือแหล่งข้อมูลอื่น ๆ
+  - `models/`: Data model สำหรับ mapping JSON <-> Entity
+  - `repositories/`: implements repository interface (domain) เชื่อมโยง datasource กับ domain
+
+- **lib/presentation/**
+
+  - `bloc/`: state management (Riverpod/StateNotifier/Bloc)
+  - `pages/`: UI หลักแต่ละหน้า (เช่น HomePage, UserPage)
+  - `widgets/`: UI ย่อยที่นำกลับมาใช้ซ้ำได้
+
+- **lib/di/**
+
+  - `injection.dart`: กำหนด provider สำหรับ dependency injection (Riverpod/Provider)
+
+- **lib/main.dart**
+  - จุดเริ่มต้นของแอป, กำหนด ProviderScope, go_router, theme, initial route
+
+---
+
+### Data Flow Example
+
+1. User กดปุ่มใน `example_page.dart`
+2. เรียก method ใน `example_notifier.dart`
+3. Notifier เรียก `GetExample` usecase
+4. Usecase เรียก `ExampleRepository` (interface)
+5. `ExampleRepositoryImpl` (data layer) implements interface และเรียก `ExampleRemoteDataSource`
+6. DataSource ใช้ dio ดึงข้อมูลจาก API, hive cache ข้อมูล
+7. ข้อมูลถูกแปลงเป็น `ExampleModel` แล้ว map เป็น `ExampleEntity`
+8. ข้อมูลถูกส่งกลับไปยัง notifier และแสดงผลใน page
+
+---

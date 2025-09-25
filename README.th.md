@@ -1,3 +1,55 @@
+# อธิบายโครงสร้างและความสัมพันธ์ของแต่ละไฟล์/โฟลเดอร์
+
+### core/
+
+- **error/**: จัดการ error handling กลาง เช่น exception, failure class
+- **usecases/**: usecase ที่ใช้ซ้ำได้หลาย domain หรือ generic usecase
+- **utils/**: ฟังก์ชันหรือคลาสช่วยเหลือที่ใช้ซ้ำได้ทั้งโปรเจกต์ เช่น date, string, validation
+
+### domain/
+
+- **entities/**: โครงสร้างข้อมูลหลัก (Model หลักของ business logic) เช่น User, Product, Order
+- **repositories/**: interface ของ repository (abstract class) กำหนด method ที่ต้องมีสำหรับ data access ของแต่ละ domain (ไม่ผูกกับ data source ใด ๆ)
+- **usecases/**: กำหนด business logic ที่ใช้กับ entity/repository เช่น GetUser, GetProduct, LoginUser
+
+### data/
+
+- **models/**: data model ที่ใช้ mapping กับ API หรือ local storage (extends entity) เช่น UserModel extends User
+- **datasources/**: จัดการการดึง/บันทึกข้อมูลจากแหล่งต่าง ๆ เช่น API, Database, Local storage (เช่น UserRemoteDataSource, UserLocalDataSource)
+- **repositories/**: implement repository interface จาก domain โดยเชื่อมโยงกับ datasource และ model (เช่น UserRepositoryImpl implements UserRepository)
+
+### presentation/
+
+- **bloc/**: state management (เช่น Riverpod AsyncNotifier, Bloc, Cubit) สำหรับควบคุม state ของ UI
+- **pages/**: หน้าจอ UI หลักแต่ละหน้า (Widget หลัก) เช่น UserPage, ProductPage
+- **widgets/**: widget ย่อยที่ใช้ซ้ำในแต่ละหน้า เช่น UserCard, ProductTile
+
+### di/
+
+- **injection.dart**: รวม provider หรือ DI setup สำหรับเชื่อมโยง repository, datasource, usecase, dio, hive ฯลฯ ให้กับ presentation layer
+
+### main.dart
+
+- จุดเริ่มต้นของแอป กำหนด ProviderScope, MaterialApp, go_router, theme, home page
+
+---
+
+## ความสัมพันธ์ของแต่ละไฟล์/โฟลเดอร์
+
+1. **presentation** เรียกใช้ usecase ผ่าน provider ที่ประกาศใน di/injection.dart
+2. usecase จะเรียก repository interface (domain)
+3. repository implementation (data) จะ implement interface จาก domain และเชื่อมโยงกับ datasource/model
+4. datasource จะดึงข้อมูลจาก API/local แล้ว map เป็น model และ entity
+5. entity คือข้อมูลหลักที่ไหลกลับไปยัง presentation layer
+6. core ใช้สำหรับ logic หรือ utility ที่ใช้ร่วมกันหลาย domain
+7. di/injection.dart ทำหน้าที่เชื่อมโยงทุกชั้น (dependency graph)
+
+**สรุป:**
+
+presentation → usecase → repository (domain) → repository impl (data) → datasource/model → entity → presentation
+
+---
+
 # Blueprint Application Clean Architecture (ภาษาไทย)
 
 ---
