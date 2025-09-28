@@ -242,6 +242,252 @@ MIT
 
 ## Deep Dive: File/Folder Purpose & Relationships
 
+---
+
+## Example: lib/core Structure, Usage, and Benefits
+
+### 1. error/
+
+**Purpose:**
+สำหรับจัดการข้อผิดพลาด (error handling) เช่น custom exceptions, failure class, network error ฯลฯ
+
+**Example:**
+
+```dart
+// lib/core/error/failure.dart
+class Failure {
+  final String message;
+  Failure(this.message);
+}
+
+class NetworkFailure extends Failure {
+  NetworkFailure(String message) : super(message);
+}
+```
+
+**How to use:**
+
+```dart
+import 'package:blueprint_application/core/error/failure.dart';
+
+Future<void> fetchData() async {
+  try {
+    // ...
+  } catch (e) {
+    throw NetworkFailure('No Internet');
+  }
+}
+```
+
+---
+
+### 2. usecases/
+
+**Purpose:**
+รวม base class สำหรับ usecase เพื่อให้ทุก usecase ใน domain layer สืบทอดและใช้งานได้อย่างเป็นมาตรฐาน
+
+**Example:**
+
+```dart
+// lib/core/usecases/usecase.dart
+abstract class UseCase<Type, Params> {
+  Future<Type> call(Params params);
+}
+```
+
+**How to use:**
+
+```dart
+import 'package:blueprint_application/core/usecases/usecase.dart';
+
+class GetUser implements UseCase<User, String> {
+  @override
+  Future<User> call(String id) async {
+    // ...
+  }
+}
+```
+
+---
+
+### 3. utils/
+
+**Purpose:**
+ฟังก์ชันหรือคลาสช่วยเหลือทั่วไปที่ใช้ซ้ำได้ในหลายๆ ส่วนของแอป เช่น date formatter, validators, converters
+
+**Example:**
+
+```dart
+// lib/core/utils/date_utils.dart
+class DateUtils {
+  static String format(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+}
+```
+
+**How to use:**
+
+```dart
+import 'package:blueprint_application/core/utils/date_utils.dart';
+
+final formatted = DateUtils.format(DateTime.now());
+```
+
+---
+
+### Summary
+
+- ทุกไฟล์ใน core/ ควรเป็น generic, reusable, ไม่ขึ้นกับ domain/business logic โดยตรง
+- สามารถนำไปใช้ได้ทุก layer ของแอป
+
+---
+
+---
+
+## Example: lib/core (error, usecases, utils)
+
+### โครงสร้างไฟล์
+
+```
+lib/core/
+  error/
+    failure.dart
+    exception.dart
+  usecases/
+    usecase.dart
+  utils/
+    network_info.dart
+    constants.dart
+```
+
+### อธิบายแต่ละไฟล์/โฟลเดอร์
+
+- **error/**
+  - `failure.dart`: กำหนด Failure (abstract) และ subclass เช่น ServerFailure, CacheFailure สำหรับสื่อสารข้อผิดพลาดข้ามเลเยอร์
+  - `exception.dart`: custom Exception เช่น ServerException, CacheException สำหรับโยนข้อผิดพลาดจาก data layer
+- **usecases/**
+  - `usecase.dart`: abstract class `UseCase<Type, Params>` ให้ทุก usecase ใน domain layer สืบทอด
+- **utils/**
+  - `network_info.dart`: Utility สำหรับเช็ค network (เช่น เชื่อมต่ออินเทอร์เน็ตหรือไม่)
+  - `constants.dart`: กำหนดค่าคงที่ที่ใช้ซ้ำ เช่น baseUrl, timeout
+
+### ตัวอย่างโค้ด
+
+#### error/failure.dart
+
+```dart
+abstract class Failure {
+  final String? message;
+  Failure([this.message]);
+}
+
+class ServerFailure extends Failure {
+  ServerFailure([String? message]) : super(message);
+}
+
+class CacheFailure extends Failure {
+  CacheFailure([String? message]) : super(message);
+}
+```
+
+#### error/exception.dart
+
+```dart
+class ServerException implements Exception {
+  final String? message;
+  ServerException([this.message]);
+}
+
+class CacheException implements Exception {
+  final String? message;
+  CacheException([this.message]);
+}
+```
+
+#### usecases/usecase.dart
+
+```dart
+abstract class UseCase<Type, Params> {
+  Future<Type> call(Params params);
+}
+```
+
+#### utils/network_info.dart
+
+```dart
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+abstract class NetworkInfo {
+  Future<bool> get isConnected;
+}
+
+class NetworkInfoImpl implements NetworkInfo {
+  final Connectivity connectivity;
+  NetworkInfoImpl(this.connectivity);
+
+  @override
+  Future<bool> get isConnected async {
+    final result = await connectivity.checkConnectivity();
+    return result != ConnectivityResult.none;
+  }
+}
+```
+
+#### utils/constants.dart
+
+```dart
+const String baseUrl = 'https://api.example.com/';
+const int timeout = 5000;
+```
+
+### ประโยชน์
+
+- **error/**: แยกข้อผิดพลาดและ exception ให้จัดการได้ง่ายและเป็นระบบ
+- **usecases/**: ทำให้ usecase ทุกตัวมีรูปแบบเดียวกัน รองรับการทดสอบและขยายระบบ
+- **utils/**: รวม utility ที่ใช้ซ้ำ เช่น network, constants ลดการเขียนโค้ดซ้ำ
+
+### วิธีเรียกใช้
+
+#### ตัวอย่างการใช้ Failure ใน repository
+
+```dart
+import '../../core/error/failure.dart';
+
+Future<Either<Failure, User>> getUser(String id) async {
+  try {
+    // ... fetch user
+  } on ServerException catch (e) {
+    return Left(ServerFailure(e.message));
+  }
+}
+```
+
+#### ตัวอย่างการใช้ UseCase
+
+```dart
+import '../../core/usecases/usecase.dart';
+
+class GetUser extends UseCase<User, String> {
+  // ... implement call
+}
+```
+
+#### ตัวอย่างการใช้ NetworkInfo
+
+```dart
+import '../../core/utils/network_info.dart';
+
+final networkInfo = NetworkInfoImpl(Connectivity());
+final connected = await networkInfo.isConnected;
+```
+
+### สรุป
+
+- `lib/core` คือศูนย์กลางของโค้ดที่ใช้ซ้ำและเป็นมาตรฐานกลางของแอป
+- ทุกเลเยอร์สามารถ import มาใช้ได้
+- ช่วยให้โค้ดสะอาด ขยายง่าย และทดสอบง่าย
+
 ### Clean Architecture Diagram
 
 ```mermaid
