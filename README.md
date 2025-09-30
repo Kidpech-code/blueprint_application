@@ -128,7 +128,7 @@ flutter pub get
 ### 2. Generate Code
 
 ```bash
-flutter packages pub run build_runner build
+flutter pub run build_runner build
 ```
 
 ### 3. Run the Application
