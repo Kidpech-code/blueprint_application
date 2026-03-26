@@ -36,7 +36,8 @@ class _BlogListViewState extends State<BlogListView> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       _blogViewModel.loadMorePosts();
     }
   }
@@ -70,15 +71,24 @@ class _BlogListViewState extends State<BlogListView> {
                 children: [
                   Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
                   const SizedBox(height: 16),
-                  Text('Error loading posts', style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    'Error loading posts',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     viewModel.postsError!.message,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  AppButton(text: 'Retry', onPressed: _loadPosts, icon: Icons.refresh),
+                  AppButton(
+                    text: 'Retry',
+                    onPressed: _loadPosts,
+                    icon: Icons.refresh,
+                  ),
                 ],
               ),
             );
@@ -97,10 +107,14 @@ class _BlogListViewState extends State<BlogListView> {
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(8),
-              itemCount: viewModel.posts.length + (viewModel.hasMorePosts ? 1 : 0),
+              itemCount:
+                  viewModel.posts.length + (viewModel.hasMorePosts ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == viewModel.posts.length) {
-                  return const Padding(padding: EdgeInsets.all(16), child: LoadingWidget());
+                  return const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: LoadingWidget(),
+                  );
                 }
 
                 final post = viewModel.posts[index];
@@ -140,7 +154,11 @@ class _BlogListViewState extends State<BlogListView> {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[300],
-                      child: Icon(Icons.image_not_supported, size: 64, color: Colors.grey[600]),
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 64,
+                        color: Colors.grey[600],
+                      ),
                     );
                   },
                 ),
@@ -152,7 +170,9 @@ class _BlogListViewState extends State<BlogListView> {
           // Title
           Text(
             post.title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -161,7 +181,9 @@ class _BlogListViewState extends State<BlogListView> {
           // Excerpt
           Text(
             post.excerpt,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
@@ -170,14 +192,30 @@ class _BlogListViewState extends State<BlogListView> {
           // Metadata
           Row(
             children: [
-              CircleAvatar(radius: 12, child: Text(post.authorName[0].toUpperCase(), style: const TextStyle(fontSize: 12))),
+              CircleAvatar(
+                radius: 12,
+                child: Text(
+                  post.authorName[0].toUpperCase(),
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(post.authorName, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
-                    Text(AppUtils.formatDate(post.publishedAt), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+                    Text(
+                      post.authorName,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      AppUtils.formatDate(post.publishedAt),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                    ),
                   ],
                 ),
               ),
@@ -185,11 +223,21 @@ class _BlogListViewState extends State<BlogListView> {
                 children: [
                   Icon(Icons.visibility, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
-                  Text(AppUtils.formatNumber(post.viewCount), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+                  Text(
+                    AppUtils.formatNumber(post.viewCount),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                  ),
                   const SizedBox(width: 12),
                   Icon(Icons.thumb_up, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
-                  Text(AppUtils.formatNumber(post.likeCount), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
+                  Text(
+                    AppUtils.formatNumber(post.likeCount),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                  ),
                 ],
               ),
             ],
@@ -203,9 +251,23 @@ class _BlogListViewState extends State<BlogListView> {
               runSpacing: 6,
               children: post.tags.take(3).map((tag) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                  child: Text(tag, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontSize: 11)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    tag,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 11,
+                    ),
+                  ),
                 );
               }).toList(),
             ),

@@ -9,13 +9,20 @@ import '../features/blog/presentation/routes/blog_routes.dart';
 import '../features/common/presentation/views/not_found_view.dart';
 import '../features/common/presentation/views/error_view.dart';
 
+import '../config.dart';
+
 class AppRouter {
   static final GoRouter _router = GoRouter(
     initialLocation: '/auth/login',
-    errorBuilder: (context, state) => ErrorView(error: state.error?.toString() ?? 'Unknown error occurred'),
+    errorBuilder: (context, state) =>
+        ErrorView(error: state.error?.toString() ?? 'Unknown error occurred'),
     routes: [
       // Home route
-      GoRoute(path: '/', builder: (context, state) => const NotFoundView(), redirect: (context, state) => '/auth/login'),
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const NotFoundView(),
+        redirect: (context, state) => '/auth/login',
+      ),
 
       // Auth Feature Routes
       ...AuthRoutes.routes,
@@ -34,7 +41,7 @@ class AppRouter {
       // For example, check authentication status
       return null;
     },
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: AppConfig.enableDebugMode,
   );
 
   static GoRouter get router => _router;
@@ -62,7 +69,9 @@ class AppRouter {
 
   // Specific navigation methods for features
   static void goToLogin({String? redirectTo}) {
-    final location = redirectTo != null ? '/auth/login?redirect=$redirectTo' : '/auth/login';
+    final location = redirectTo != null
+        ? '/auth/login?redirect=${Uri.encodeComponent(redirectTo)}'
+        : '/auth/login';
     go(location);
   }
 
@@ -71,12 +80,22 @@ class AppRouter {
   }
 
   static void goToProfile(String userId, {String? tab}) {
-    final location = tab != null ? '/profile/$userId?tab=$tab' : '/profile/$userId';
+    final location = tab != null
+        ? '/profile/$userId?tab=$tab'
+        : '/profile/$userId';
     go(location);
   }
 
-  static void goToBlogPost({required String year, required String month, required String day, required String slug, bool? preview}) {
-    final location = preview == true ? '/blog/$year/$month/$day/$slug?preview=true' : '/blog/$year/$month/$day/$slug';
+  static void goToBlogPost({
+    required String year,
+    required String month,
+    required String day,
+    required String slug,
+    bool? preview,
+  }) {
+    final location = preview == true
+        ? '/blog/$year/$month/$day/$slug?preview=true'
+        : '/blog/$year/$month/$day/$slug';
     go(location);
   }
 
@@ -85,14 +104,19 @@ class AppRouter {
   }
 
   static void goToEventBooking(String eventId, {String? step, String? coupon}) {
-    var location = '/event/$eventId/booking';
+    var location = '/event/${Uri.encodeComponent(eventId)}/booking';
     final queryParams = <String, String>{};
 
     if (step != null) queryParams['step'] = step;
     if (coupon != null) queryParams['coupon'] = coupon;
 
     if (queryParams.isNotEmpty) {
-      final query = queryParams.entries.map((e) => '${e.key}=${e.value}').join('&');
+      final query = queryParams.entries
+          .map(
+            (e) =>
+                '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
+          )
+          .join('&');
       location = '$location?$query';
     }
 

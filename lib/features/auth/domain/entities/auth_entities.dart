@@ -9,12 +9,33 @@ class User extends Equatable {
   final DateTime createdAt;
   final DateTime? lastLoginAt;
 
-  const User({required this.id, required this.email, required this.name, this.profileImage, required this.createdAt, this.lastLoginAt});
+  const User({
+    required this.id,
+    required this.email,
+    required this.name,
+    this.profileImage,
+    required this.createdAt,
+    this.lastLoginAt,
+  });
 
   @override
-  List<Object?> get props => [id, email, name, profileImage, createdAt, lastLoginAt];
+  List<Object?> get props => [
+    id,
+    email,
+    name,
+    profileImage,
+    createdAt,
+    lastLoginAt,
+  ];
 
-  User copyWith({String? id, String? email, String? name, String? profileImage, DateTime? createdAt, DateTime? lastLoginAt}) {
+  User copyWith({
+    String? id,
+    String? email,
+    String? name,
+    String? profileImage,
+    DateTime? createdAt,
+    DateTime? lastLoginAt,
+  }) {
     return User(
       id: id ?? this.id,
       email: email ?? this.email,
@@ -32,14 +53,22 @@ class AuthToken extends Equatable {
   final String refreshToken;
   final DateTime expiresAt;
 
-  const AuthToken({required this.accessToken, required this.refreshToken, required this.expiresAt});
+  const AuthToken({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.expiresAt,
+  });
 
   @override
   List<Object> get props => [accessToken, refreshToken, expiresAt];
 
   bool get isExpired => DateTime.now().isAfter(expiresAt);
 
-  AuthToken copyWith({String? accessToken, String? refreshToken, DateTime? expiresAt}) {
+  AuthToken copyWith({
+    String? accessToken,
+    String? refreshToken,
+    DateTime? expiresAt,
+  }) {
     return AuthToken(
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,

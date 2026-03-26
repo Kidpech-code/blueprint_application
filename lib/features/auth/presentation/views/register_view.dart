@@ -33,7 +33,11 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register'), backgroundColor: Theme.of(context).primaryColor, foregroundColor: Colors.white),
+      appBar: AppBar(
+        title: const Text('Register'),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+      ),
       body: Consumer<AuthViewModel>(
         builder: (context, authViewModel, child) {
           return SafeArea(
@@ -45,19 +49,27 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(height: 32),
 
                   // Logo or App Title
-                  Icon(Icons.person_add_outlined, size: 64, color: Theme.of(context).primaryColor),
+                  Icon(
+                    Icons.person_add_outlined,
+                    size: 64,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   const SizedBox(height: 24),
 
                   Text(
                     'Create Account',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
 
                   Text(
                     'Please fill in the details to create your account',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -77,7 +89,8 @@ class _RegisterViewState extends State<RegisterView> {
                             prefixIcon: Icon(Icons.person_outlined),
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) => AppUtils.validateRequired(value, 'Name'),
+                          validator: (value) =>
+                              AppUtils.validateRequired(value, 'Name'),
                           enabled: !authViewModel.isLoading,
                         ),
                         const SizedBox(height: 16),
@@ -87,7 +100,11 @@ class _RegisterViewState extends State<RegisterView> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
-                          decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined), border: OutlineInputBorder()),
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.email_outlined),
+                            border: OutlineInputBorder(),
+                          ),
                           validator: AppUtils.validateEmail,
                           enabled: !authViewModel.isLoading,
                         ),
@@ -101,7 +118,11 @@ class _RegisterViewState extends State<RegisterView> {
                             labelText: 'Password',
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
-                              icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
                               onPressed: () {
                                 setState(() {
                                   _obscurePassword = !_obscurePassword;
@@ -109,7 +130,8 @@ class _RegisterViewState extends State<RegisterView> {
                               },
                             ),
                             border: const OutlineInputBorder(),
-                            helperText: 'At least 8 characters with letters and numbers',
+                            helperText:
+                                'At least 8 characters with letters and numbers',
                           ),
                           validator: AppUtils.validatePassword,
                           enabled: !authViewModel.isLoading,
@@ -124,10 +146,15 @@ class _RegisterViewState extends State<RegisterView> {
                             labelText: 'Confirm Password',
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
-                              icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(
+                                _obscureConfirmPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
                               onPressed: () {
                                 setState(() {
-                                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                                  _obscureConfirmPassword =
+                                      !_obscureConfirmPassword;
                                 });
                               },
                             ),
@@ -157,12 +184,22 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.error_outline, color: Colors.red[700]),
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red[700],
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
-                                  child: Text(authViewModel.error!.message, style: TextStyle(color: Colors.red[700])),
+                                  child: Text(
+                                    authViewModel.error!.message,
+                                    style: TextStyle(color: Colors.red[700]),
+                                  ),
                                 ),
-                                IconButton(icon: const Icon(Icons.close), onPressed: authViewModel.clearError, iconSize: 20),
+                                IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: authViewModel.clearError,
+                                  iconSize: 20,
+                                ),
                               ],
                             ),
                           ),
@@ -189,10 +226,15 @@ class _RegisterViewState extends State<RegisterView> {
                             text: TextSpan(
                               style: Theme.of(context).textTheme.bodyMedium,
                               children: [
-                                const TextSpan(text: "Already have an account? "),
+                                const TextSpan(
+                                  text: "Already have an account? ",
+                                ),
                                 TextSpan(
                                   text: 'Sign in',
-                                  style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             ),
@@ -200,7 +242,9 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
 
                         // Bottom spacing for keyboard
-                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 32),
+                        SizedBox(
+                          height: MediaQuery.of(context).viewInsets.bottom + 32,
+                        ),
                       ],
                     ),
                   ),
@@ -216,12 +260,18 @@ class _RegisterViewState extends State<RegisterView> {
   void _register() {
     if (_formKey.currentState!.validate()) {
       final authViewModel = context.read<AuthViewModel>();
-      authViewModel.register(_emailController.text.trim(), _passwordController.text, _nameController.text.trim()).then((_) {
-        if (authViewModel.isAuthenticated) {
-          // Navigate to profile or home
-          AppRouter.goToProfile(authViewModel.currentUser!.id);
-        }
-      });
+      authViewModel
+          .register(
+            _emailController.text.trim(),
+            _passwordController.text,
+            _nameController.text.trim(),
+          )
+          .then((_) {
+            if (authViewModel.isAuthenticated) {
+              // Navigate to profile or home
+              AppRouter.goToProfile(authViewModel.currentUser!.id);
+            }
+          });
     }
   }
 }

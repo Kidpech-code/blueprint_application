@@ -10,12 +10,18 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
 
-  AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
   Future<Result<AuthToken>> login(Email email, Password password) async {
     try {
-      final request = LoginRequest(email: email.value, password: password.value);
+      final request = LoginRequest(
+        email: email.value,
+        password: password.value,
+      );
 
       final response = await remoteDataSource.login(request);
       final token = response.token.toEntity();
@@ -33,9 +39,17 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthToken>> register(Email email, Password password, Name name) async {
+  Future<Result<AuthToken>> register(
+    Email email,
+    Password password,
+    Name name,
+  ) async {
     try {
-      final request = RegisterRequest(email: email.value, password: password.value, name: name.value);
+      final request = RegisterRequest(
+        email: email.value,
+        password: password.value,
+        name: name.value,
+      );
 
       final response = await remoteDataSource.register(request);
       final token = response.token.toEntity();
@@ -78,7 +92,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final token = await localDataSource.getStoredToken();
 
       if (token == null || token.toEntity().isExpired) {
-        return const Failure(AuthenticationError('No valid authentication token'));
+        return const Failure(
+          AuthenticationError('No valid authentication token'),
+        );
       }
 
       // Try to get user from local storage first
@@ -88,7 +104,9 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       // If not available locally, fetch from remote
-      final remoteUser = await remoteDataSource.getCurrentUser(token.accessToken);
+      final remoteUser = await remoteDataSource.getCurrentUser(
+        token.accessToken,
+      );
       await localDataSource.storeUser(remoteUser);
 
       return Success(remoteUser.toEntity());
@@ -164,7 +182,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final token = await localDataSource.getStoredToken();
 
       if (token == null || token.toEntity().isExpired) {
-        return const Failure(AuthenticationError('No valid authentication token'));
+        return const Failure(
+          AuthenticationError('No valid authentication token'),
+        );
       }
 
       await remoteDataSource.verifyEmail(verificationCode, token.accessToken);
@@ -182,7 +202,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final token = await localDataSource.getStoredToken();
 
       if (token == null || token.toEntity().isExpired) {
-        return const Failure(AuthenticationError('No valid authentication token'));
+        return const Failure(
+          AuthenticationError('No valid authentication token'),
+        );
       }
 
       await remoteDataSource.resendVerificationEmail(token.accessToken);

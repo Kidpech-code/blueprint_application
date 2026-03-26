@@ -15,9 +15,17 @@ class UserModel {
   @JsonKey(name: 'last_login_at')
   final String? lastLoginAt;
 
-  const UserModel({required this.id, required this.email, required this.name, this.profileImage, required this.createdAt, this.lastLoginAt});
+  const UserModel({
+    required this.id,
+    required this.email,
+    required this.name,
+    this.profileImage,
+    required this.createdAt,
+    this.lastLoginAt,
+  });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
@@ -53,18 +61,31 @@ class AuthTokenModel {
   @JsonKey(name: 'expires_at')
   final String expiresAt;
 
-  const AuthTokenModel({required this.accessToken, required this.refreshToken, required this.expiresAt});
+  const AuthTokenModel({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.expiresAt,
+  });
 
-  factory AuthTokenModel.fromJson(Map<String, dynamic> json) => _$AuthTokenModelFromJson(json);
+  factory AuthTokenModel.fromJson(Map<String, dynamic> json) =>
+      _$AuthTokenModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$AuthTokenModelToJson(this);
 
   AuthToken toEntity() {
-    return AuthToken(accessToken: accessToken, refreshToken: refreshToken, expiresAt: DateTime.parse(expiresAt));
+    return AuthToken(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      expiresAt: DateTime.parse(expiresAt),
+    );
   }
 
   factory AuthTokenModel.fromEntity(AuthToken token) {
-    return AuthTokenModel(accessToken: token.accessToken, refreshToken: token.refreshToken, expiresAt: token.expiresAt.toIso8601String());
+    return AuthTokenModel(
+      accessToken: token.accessToken,
+      refreshToken: token.refreshToken,
+      expiresAt: token.expiresAt.toIso8601String(),
+    );
   }
 }
 
@@ -75,7 +96,8 @@ class LoginRequest {
 
   const LoginRequest({required this.email, required this.password});
 
-  factory LoginRequest.fromJson(Map<String, dynamic> json) => _$LoginRequestFromJson(json);
+  factory LoginRequest.fromJson(Map<String, dynamic> json) =>
+      _$LoginRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$LoginRequestToJson(this);
 }
@@ -86,9 +108,14 @@ class RegisterRequest {
   final String password;
   final String name;
 
-  const RegisterRequest({required this.email, required this.password, required this.name});
+  const RegisterRequest({
+    required this.email,
+    required this.password,
+    required this.name,
+  });
 
-  factory RegisterRequest.fromJson(Map<String, dynamic> json) => _$RegisterRequestFromJson(json);
+  factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
+      _$RegisterRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$RegisterRequestToJson(this);
 }
@@ -100,7 +127,8 @@ class AuthResponse {
 
   const AuthResponse({required this.token, required this.user});
 
-  factory AuthResponse.fromJson(Map<String, dynamic> json) => _$AuthResponseFromJson(json);
+  factory AuthResponse.fromJson(Map<String, dynamic> json) =>
+      _$AuthResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$AuthResponseToJson(this);
 }

@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config.dart';
 
 // Features
 import '../features/auth/data/datasources/auth_remote_datasource.dart';
@@ -34,15 +36,24 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => sharedPreferences);
 
   // HTTP Client
-  sl.registerLazySingleton(
-    () => Dio()
+  sl.registerLazySingleton(() {
+    final dio = Dio()
       ..options = BaseOptions(
-        baseUrl: 'https://api.example.com',
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-      )
-      ..interceptors.addAll([LogInterceptor(requestBody: true, responseBody: true)]),
-  );
+        baseUrl: AppConfig.baseUrl,
+        connectTimeout: Duration(seconds: AppConfig.connectTimeout),
+        receiveTimeout: Duration(seconds: AppConfig.receiveTimeout),
+        sendTimeout: Duration(seconds: AppConfig.sendTimeout),
+      );
+
+    // Only log network requests in debug mode to prevent leaking sensitive data
+    if (kDebugMode) {
+      dio.interceptors.add(
+        LogInterceptor(requestBody: true, responseBody: true),
+      );
+    }
+
+    return dio;
+  });
 
   // Auth Feature
   _initAuthFeature();
@@ -56,12 +67,18 @@ Future<void> initializeDependencies() async {
 
 void _initAuthFeature() {
   // Data Sources
-  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(sl()),
+  );
 
-  sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(sl()));
+  sl.registerLazySingleton<AuthLocalDataSource>(
+    () => AuthLocalDataSourceImpl(sl()),
+  );
 
   // Repositories
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()),
+  );
 
   // Use Cases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -70,15 +87,26 @@ void _initAuthFeature() {
   sl.registerLazySingleton(() => GetCurrentUserUseCase(sl()));
 
   // View Models
-  sl.registerFactory(() => AuthViewModel(loginUseCase: sl(), registerUseCase: sl(), logoutUseCase: sl(), getCurrentUserUseCase: sl()));
+  sl.registerFactory(
+    () => AuthViewModel(
+      loginUseCase: sl(),
+      registerUseCase: sl(),
+      logoutUseCase: sl(),
+      getCurrentUserUseCase: sl(),
+    ),
+  );
 }
 
 void _initProfileFeature() {
   // Data Sources
-  sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(sl()),
+  );
 
   // Repositories
-  sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(sl()));
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl()),
+  );
 
   // Use Cases
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
@@ -89,7 +117,9 @@ void _initProfileFeature() {
 
 void _initBlogFeature() {
   // Data Sources
-  sl.registerLazySingleton<BlogRemoteDataSource>(() => BlogRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<BlogRemoteDataSource>(
+    () => BlogRemoteDataSourceImpl(sl()),
+  );
 
   // Repositories
   sl.registerLazySingleton<BlogRepository>(() => BlogRepositoryImpl(sl()));
@@ -99,5 +129,7 @@ void _initBlogFeature() {
   sl.registerLazySingleton(() => GetBlogPostUseCase(sl()));
 
   // View Models
-  sl.registerFactory(() => BlogViewModel(getBlogPostsUseCase: sl(), getBlogPostUseCase: sl()));
+  sl.registerFactory(
+    () => BlogViewModel(getBlogPostsUseCase: sl(), getBlogPostUseCase: sl()),
+  );
 }

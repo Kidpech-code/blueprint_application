@@ -11,6 +11,9 @@ class AuthRoutes {
         return LoginView(redirectTo: redirectTo);
       },
     ),
-    GoRoute(path: '/auth/register', builder: (context, state) => const RegisterView()),
+    GoRoute(
+      path: '/auth/register',
+      builder: (context, state) => const RegisterView(),
+    ),
   ];
 }

@@ -10,7 +10,10 @@ class BlogViewModel extends ChangeNotifier {
   final GetBlogPostsUseCase getBlogPostsUseCase;
   final GetBlogPostUseCase getBlogPostUseCase;
 
-  BlogViewModel({required this.getBlogPostsUseCase, required this.getBlogPostUseCase});
+  BlogViewModel({
+    required this.getBlogPostsUseCase,
+    required this.getBlogPostUseCase,
+  });
 
   // Posts List State
   BlogState _postsState = BlogState.initial;
@@ -38,7 +41,14 @@ class BlogViewModel extends ChangeNotifier {
   bool get isLoadingPost => _postState == BlogState.loading;
 
   // Load Posts
-  Future<void> loadPosts({bool refresh = false, String? category, String? tag, String? search, String? sortBy, String? sortOrder}) async {
+  Future<void> loadPosts({
+    bool refresh = false,
+    String? category,
+    String? tag,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
+  }) async {
     if (refresh) {
       _currentPage = 1;
       _hasMorePosts = true;
@@ -85,7 +95,13 @@ class BlogViewModel extends ChangeNotifier {
   }) async {
     _setPostState(BlogState.loading);
 
-    final result = await getBlogPostUseCase.callByDateAndSlug(year: year, month: month, day: day, slug: slug, isPreview: isPreview);
+    final result = await getBlogPostUseCase.callByDateAndSlug(
+      year: year,
+      month: month,
+      day: day,
+      slug: slug,
+      isPreview: isPreview,
+    );
 
     result.fold(
       (post) {
@@ -118,10 +134,23 @@ class BlogViewModel extends ChangeNotifier {
   }
 
   // Load More Posts
-  Future<void> loadMorePosts({String? category, String? tag, String? search, String? sortBy, String? sortOrder}) async {
+  Future<void> loadMorePosts({
+    String? category,
+    String? tag,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
+  }) async {
     if (!_hasMorePosts || _postsState == BlogState.loading) return;
 
-    await loadPosts(refresh: false, category: category, tag: tag, search: search, sortBy: sortBy, sortOrder: sortOrder);
+    await loadPosts(
+      refresh: false,
+      category: category,
+      tag: tag,
+      search: search,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
   }
 
   // Clear Posts Error

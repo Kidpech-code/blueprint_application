@@ -39,21 +39,29 @@ class FakeAuthRepository implements AuthRepository {
 
   // Mock setters
   void setMockLoginResult(Result<AuthToken> result) => _loginResult = result;
-  void setMockRegisterResult(Result<AuthToken> result) => _registerResult = result;
+  void setMockRegisterResult(Result<AuthToken> result) =>
+      _registerResult = result;
   void setMockLogoutResult(Result<void> result) => _logoutResult = result;
-  void setMockGetCurrentUserResult(Result<User> result) => _getCurrentUserResult = result;
+  void setMockGetCurrentUserResult(Result<User> result) =>
+      _getCurrentUserResult = result;
   void setMockIsAuthenticated(bool value) => _isAuthenticated = value;
   void setMockStoredToken(AuthToken? token) => _storedToken = token;
 
   @override
   Future<Result<AuthToken>> login(Email email, Password password) async {
     loginCallCount++;
-    await Future.delayed(const Duration(milliseconds: 100)); // Simulate network delay
+    await Future.delayed(
+      const Duration(milliseconds: 100),
+    ); // Simulate network delay
     return _loginResult ?? Failure(UnknownError('No mock result set'));
   }
 
   @override
-  Future<Result<AuthToken>> register(Email email, Password password, Name name) async {
+  Future<Result<AuthToken>> register(
+    Email email,
+    Password password,
+    Name name,
+  ) async {
     registerCallCount++;
     await Future.delayed(const Duration(milliseconds: 100));
     return _registerResult ?? Failure(UnknownError('No mock result set'));
@@ -70,7 +78,8 @@ class FakeAuthRepository implements AuthRepository {
   Future<Result<User>> getCurrentUser() async {
     getCurrentUserCallCount++;
     await Future.delayed(const Duration(milliseconds: 50));
-    return _getCurrentUserResult ?? Failure(AuthenticationError('No user found'));
+    return _getCurrentUserResult ??
+        Failure(AuthenticationError('No user found'));
   }
 
   @override
@@ -97,7 +106,11 @@ class FakeAuthRepository implements AuthRepository {
   @override
   Future<Result<AuthToken>> refreshToken(String refreshToken) async {
     return Success(
-      AuthToken(accessToken: 'new-access-token', refreshToken: 'new-refresh-token', expiresAt: DateTime.now().add(const Duration(hours: 1))),
+      AuthToken(
+        accessToken: 'new-access-token',
+        refreshToken: 'new-refresh-token',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      ),
     );
   }
 
@@ -169,7 +182,12 @@ void main() {
           refreshToken: 'login-refresh',
           expiresAt: DateTime.now().add(const Duration(hours: 1)),
         );
-        final expectedUser = User(id: 'user-123', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now());
+        final expectedUser = User(
+          id: 'user-123',
+          email: 'test@example.com',
+          name: 'Test User',
+          createdAt: DateTime.now(),
+        );
 
         fakeRepository.setMockLoginResult(Success(expectedToken));
         fakeRepository.setMockGetCurrentUserResult(Success(expectedUser));
@@ -247,7 +265,10 @@ void main() {
         expect(viewModel.state, equals(AuthState.error));
         expect(viewModel.error, isA<ValidationError>());
         expect(viewModel.error!.message, contains('Invalid email format'));
-        expect(fakeRepository.loginCallCount, equals(0)); // Should not call repository
+        expect(
+          fakeRepository.loginCallCount,
+          equals(0),
+        ); // Should not call repository
       });
 
       test('should handle empty credentials', () async {
@@ -262,39 +283,51 @@ void main() {
     });
 
     group('Register Tests', () {
-      test('should update state correctly during successful registration', () async {
-        // Arrange
-        final expectedToken = AuthToken(
-          accessToken: 'register-token',
-          refreshToken: 'register-refresh',
-          expiresAt: DateTime.now().add(const Duration(hours: 1)),
-        );
-        final expectedUser = User(id: 'new-user-123', email: 'newuser@example.com', name: 'New User', createdAt: DateTime.now());
+      test(
+        'should update state correctly during successful registration',
+        () async {
+          // Arrange
+          final expectedToken = AuthToken(
+            accessToken: 'register-token',
+            refreshToken: 'register-refresh',
+            expiresAt: DateTime.now().add(const Duration(hours: 1)),
+          );
+          final expectedUser = User(
+            id: 'new-user-123',
+            email: 'newuser@example.com',
+            name: 'New User',
+            createdAt: DateTime.now(),
+          );
 
-        fakeRepository.setMockRegisterResult(Success(expectedToken));
-        fakeRepository.setMockGetCurrentUserResult(Success(expectedUser));
+          fakeRepository.setMockRegisterResult(Success(expectedToken));
+          fakeRepository.setMockGetCurrentUserResult(Success(expectedUser));
 
-        final stateChanges = <AuthState>[];
-        viewModel.addListener(() {
-          stateChanges.add(viewModel.state);
-        });
+          final stateChanges = <AuthState>[];
+          viewModel.addListener(() {
+            stateChanges.add(viewModel.state);
+          });
 
-        // Act
-        await viewModel.register('newuser@example.com', 'Password123', 'New User');
+          // Act
+          await viewModel.register(
+            'newuser@example.com',
+            'Password123',
+            'New User',
+          );
 
-        // Wait for async operations to complete
-        await waitForAsyncOp();
+          // Wait for async operations to complete
+          await waitForAsyncOp();
 
-        // Assert
-        expect(stateChanges, contains(AuthState.loading));
-        expect(stateChanges, contains(AuthState.authenticated));
-        await waitForAsyncOp();
-        expect(viewModel.state, equals(AuthState.authenticated));
-        expect(viewModel.currentUser, isNotNull);
-        expect(viewModel.currentUser!.name, equals('New User'));
-        expect(fakeRepository.registerCallCount, equals(1));
-        expect(fakeRepository.getCurrentUserCallCount, equals(1));
-      });
+          // Assert
+          expect(stateChanges, contains(AuthState.loading));
+          expect(stateChanges, contains(AuthState.authenticated));
+          await waitForAsyncOp();
+          expect(viewModel.state, equals(AuthState.authenticated));
+          expect(viewModel.currentUser, isNotNull);
+          expect(viewModel.currentUser!.name, equals('New User'));
+          expect(fakeRepository.registerCallCount, equals(1));
+          expect(fakeRepository.getCurrentUserCallCount, equals(1));
+        },
+      );
 
       test('should handle duplicate email registration', () async {
         // Arrange
@@ -329,7 +362,12 @@ void main() {
           refreshToken: 'login-refresh',
           expiresAt: DateTime.now().add(const Duration(hours: 1)),
         );
-        final user = User(id: 'user-123', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now());
+        final user = User(
+          id: 'user-123',
+          email: 'test@example.com',
+          name: 'Test User',
+          createdAt: DateTime.now(),
+        );
 
         fakeRepository.setMockLoginResult(Success(loginToken));
         fakeRepository.setMockGetCurrentUserResult(Success(user));
@@ -365,7 +403,12 @@ void main() {
           refreshToken: 'login-refresh',
           expiresAt: DateTime.now().add(const Duration(hours: 1)),
         );
-        final user = User(id: 'user-123', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now());
+        final user = User(
+          id: 'user-123',
+          email: 'test@example.com',
+          name: 'Test User',
+          createdAt: DateTime.now(),
+        );
 
         fakeRepository.setMockLoginResult(Success(loginToken));
         fakeRepository.setMockGetCurrentUserResult(Success(user));
@@ -393,8 +436,17 @@ void main() {
         });
 
         // Setup for login operation to trigger state changes
-        final token = AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
-        final user = User(id: 'test-user', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now());
+        final token = AuthToken(
+          accessToken: 'test-token',
+          refreshToken: 'test-refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        );
+        final user = User(
+          id: 'test-user',
+          email: 'test@example.com',
+          name: 'Test User',
+          createdAt: DateTime.now(),
+        );
         fakeRepository.setMockLoginResult(Success(token));
         fakeRepository.setMockGetCurrentUserResult(Success(user));
 
@@ -407,15 +459,28 @@ void main() {
 
       test('should clear error when new operation starts', () async {
         // Arrange - Create an error state first by failing login
-        fakeRepository.setMockLoginResult(Failure(ValidationError('Previous error')));
+        fakeRepository.setMockLoginResult(
+          Failure(ValidationError('Previous error')),
+        );
         await viewModel.login('invalid@example.com', 'wrongpassword');
         expect(viewModel.error, isNotNull);
 
         // Setup successful login
-        final token = AuthToken(accessToken: 'token', refreshToken: 'refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+        final token = AuthToken(
+          accessToken: 'token',
+          refreshToken: 'refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        );
         fakeRepository.setMockLoginResult(Success(token));
         fakeRepository.setMockGetCurrentUserResult(
-          Success(User(id: 'user', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now())),
+          Success(
+            User(
+              id: 'user',
+              email: 'test@example.com',
+              name: 'Test User',
+              createdAt: DateTime.now(),
+            ),
+          ),
         );
 
         // Act
@@ -427,29 +492,56 @@ void main() {
         expect(viewModel.state, equals(AuthState.authenticated));
       });
 
-      test('should maintain state consistency during concurrent operations', () async {
-        // Arrange
-        final token = AuthToken(accessToken: 'token', refreshToken: 'refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
-        fakeRepository.setMockLoginResult(Success(token));
-        fakeRepository.setMockGetCurrentUserResult(
-          Success(User(id: 'user', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now())),
-        );
+      test(
+        'should maintain state consistency during concurrent operations',
+        () async {
+          // Arrange
+          final token = AuthToken(
+            accessToken: 'token',
+            refreshToken: 'refresh',
+            expiresAt: DateTime.now().add(const Duration(hours: 1)),
+          );
+          fakeRepository.setMockLoginResult(Success(token));
+          fakeRepository.setMockGetCurrentUserResult(
+            Success(
+              User(
+                id: 'user',
+                email: 'test@example.com',
+                name: 'Test User',
+                createdAt: DateTime.now(),
+              ),
+            ),
+          );
 
-        // Act - Start multiple operations
-        final futures = [viewModel.login('test1@example.com', 'password1'), viewModel.login('test2@example.com', 'password2')];
+          // Act - Start multiple operations
+          final futures = [
+            viewModel.login('test1@example.com', 'password1'),
+            viewModel.login('test2@example.com', 'password2'),
+          ];
 
-        await Future.wait(futures);
-        await waitForAsyncOp(300); // Wait for concurrent operations to complete
+          await Future.wait(futures);
+          await waitForAsyncOp(
+            300,
+          ); // Wait for concurrent operations to complete
 
-        // Assert - Should not crash and have consistent state
-        expect(viewModel.state, isIn([AuthState.authenticated, AuthState.error]));
-      });
+          // Assert - Should not crash and have consistent state
+          expect(
+            viewModel.state,
+            isIn([AuthState.authenticated, AuthState.error]),
+          );
+        },
+      );
     });
 
     group('User Session Management Tests', () {
       test('should check current user on initialization', () async {
         // Arrange
-        final existingUser = User(id: 'existing-user', email: 'existing@example.com', name: 'Existing User', createdAt: DateTime.now());
+        final existingUser = User(
+          id: 'existing-user',
+          email: 'existing@example.com',
+          name: 'Existing User',
+          createdAt: DateTime.now(),
+        );
         fakeRepository.setMockGetCurrentUserResult(Success(existingUser));
 
         // Act
@@ -464,7 +556,9 @@ void main() {
 
       test('should handle no existing session', () async {
         // Arrange
-        fakeRepository.setMockGetCurrentUserResult(Failure(AuthenticationError('No user session')));
+        fakeRepository.setMockGetCurrentUserResult(
+          Failure(AuthenticationError('No user session')),
+        );
 
         // Act
         await viewModel.checkAuthenticationStatus();
@@ -477,8 +571,17 @@ void main() {
 
       test('should update user profile', () async {
         // Arrange - Login first to get authenticated user
-        final token = AuthToken(accessToken: 'token', refreshToken: 'refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
-        final originalUser = User(id: 'user-123', email: 'original@example.com', name: 'Original Name', createdAt: DateTime.now());
+        final token = AuthToken(
+          accessToken: 'token',
+          refreshToken: 'refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        );
+        final originalUser = User(
+          id: 'user-123',
+          email: 'original@example.com',
+          name: 'Original Name',
+          createdAt: DateTime.now(),
+        );
 
         fakeRepository.setMockLoginResult(Success(token));
         fakeRepository.setMockGetCurrentUserResult(Success(originalUser));
@@ -503,7 +606,9 @@ void main() {
     group('Error Handling Tests', () {
       test('should handle unexpected errors gracefully', () async {
         // Arrange
-        fakeRepository.setMockLoginResult(Failure(UnknownError('Unexpected server error')));
+        fakeRepository.setMockLoginResult(
+          Failure(UnknownError('Unexpected server error')),
+        );
 
         // Act
         await viewModel.login('test@example.com', 'password123');
@@ -531,9 +636,21 @@ void main() {
           await viewModel.login('test@example.com', 'password123');
 
           // Assert
-          expect(viewModel.state, equals(AuthState.error), reason: 'Should handle $errorType error');
-          expect(viewModel.error, isA<AppError>(), reason: 'Should have AppError for $errorType');
-          expect(viewModel.error!.message, isNotEmpty, reason: 'Should have error message for $errorType');
+          expect(
+            viewModel.state,
+            equals(AuthState.error),
+            reason: 'Should handle $errorType error',
+          );
+          expect(
+            viewModel.error,
+            isA<AppError>(),
+            reason: 'Should have AppError for $errorType',
+          );
+          expect(
+            viewModel.error!.message,
+            isNotEmpty,
+            reason: 'Should have error message for $errorType',
+          );
 
           // Reset for next test
           viewModel.clearError();
@@ -542,7 +659,9 @@ void main() {
 
       test('should allow error recovery', () async {
         // Arrange - Start with error state by failing login
-        fakeRepository.setMockLoginResult(Failure(NetworkError('Connection failed')));
+        fakeRepository.setMockLoginResult(
+          Failure(NetworkError('Connection failed')),
+        );
         await viewModel.login('error@example.com', 'wrongpassword');
         expect(viewModel.state, equals(AuthState.error));
 
@@ -554,7 +673,14 @@ void main() {
         );
         fakeRepository.setMockLoginResult(Success(token));
         fakeRepository.setMockGetCurrentUserResult(
-          Success(User(id: 'recovery-user', email: 'recovery@example.com', name: 'Recovery User', createdAt: DateTime.now())),
+          Success(
+            User(
+              id: 'recovery-user',
+              email: 'recovery@example.com',
+              name: 'Recovery User',
+              createdAt: DateTime.now(),
+            ),
+          ),
         );
 
         // Act - Retry operation
@@ -571,10 +697,21 @@ void main() {
     group('Performance Tests', () {
       test('should handle rapid successive operations', () async {
         // Arrange
-        final token = AuthToken(accessToken: 'rapid-token', refreshToken: 'rapid-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
+        final token = AuthToken(
+          accessToken: 'rapid-token',
+          refreshToken: 'rapid-refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        );
         fakeRepository.setMockLoginResult(Success(token));
         fakeRepository.setMockGetCurrentUserResult(
-          Success(User(id: 'rapid-user', email: 'rapid@example.com', name: 'Rapid User', createdAt: DateTime.now())),
+          Success(
+            User(
+              id: 'rapid-user',
+              email: 'rapid@example.com',
+              name: 'Rapid User',
+              createdAt: DateTime.now(),
+            ),
+          ),
         );
 
         int notificationCount = 0;
@@ -591,7 +728,10 @@ void main() {
 
         // Assert - Should not crash and handle all operations
         expect(notificationCount, greaterThan(0));
-        expect(viewModel.state, isIn([AuthState.authenticated, AuthState.error]));
+        expect(
+          viewModel.state,
+          isIn([AuthState.authenticated, AuthState.error]),
+        );
       });
 
       test('should dispose resources properly', () {
@@ -606,7 +746,8 @@ void main() {
 
         // Try to trigger notification after dispose - should be handled gracefully
         try {
-          viewModel.clearError(); // This might still notify if not properly disposed
+          viewModel
+              .clearError(); // This might still notify if not properly disposed
         } catch (e) {
           // Expected if dispose is working correctly
         }
@@ -628,8 +769,17 @@ void main() {
         getCurrentUserUseCase: GetCurrentUserUseCase(fakeRepository),
       );
 
-      final token = AuthToken(accessToken: 'flow-token', refreshToken: 'flow-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)));
-      final user = User(id: 'flow-user', email: 'flow@example.com', name: 'Flow User', createdAt: DateTime.now());
+      final token = AuthToken(
+        accessToken: 'flow-token',
+        refreshToken: 'flow-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      );
+      final user = User(
+        id: 'flow-user',
+        email: 'flow@example.com',
+        name: 'Flow User',
+        createdAt: DateTime.now(),
+      );
 
       fakeRepository.setMockRegisterResult(Success(token));
       fakeRepository.setMockGetCurrentUserResult(Success(user));

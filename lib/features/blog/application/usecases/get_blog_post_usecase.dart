@@ -14,7 +14,13 @@ class GetBlogPostUseCase {
     required String slug,
     bool isPreview = false,
   }) async {
-    return await repository.getPostByDateAndSlug(year: year, month: month, day: day, slug: slug, isPreview: isPreview);
+    return await repository.getPostByDateAndSlug(
+      year: year,
+      month: month,
+      day: day,
+      slug: slug,
+      isPreview: isPreview,
+    );
   }
 
   Future<Result<BlogPost>> callById(String postId) async {

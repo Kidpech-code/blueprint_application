@@ -12,7 +12,10 @@ class AppConfig {
   static const String appDescription = 'Flutter MVVM+DDD Architecture Template';
 
   // API Configuration
-  static const String baseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'https://api.example.com');
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://api.example.com',
+  );
 
   static const String apiVersion = 'v1';
   static const String apiPrefix = '/api/$apiVersion';
@@ -65,12 +68,14 @@ class AppConfig {
   static const int maxPostContentLength = 10000;
 
   // Validation Patterns
-  static const String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  static const String emailPattern =
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   static const String phonePattern = r'^\+?[1-9]\d{1,14}$';
   static const String urlPattern = r'^https?:\/\/[^\s/$.?#].[^\s]*$';
 
   // Error Messages
-  static const String networkErrorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย';
+  static const String networkErrorMessage =
+      'เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย';
   static const String serverErrorMessage = 'เกิดข้อผิดพลาดจากเซิร์ฟเวอร์';
   static const String unknownErrorMessage = 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ';
   static const String invalidInputMessage = 'ข้อมูลที่กรอกไม่ถูกต้อง';
@@ -85,38 +90,74 @@ class AppConfig {
   static const String deleteSuccessMessage = 'ลบข้อมูลสำเร็จ';
 
   // Feature Flags
-  static const bool enableDebugMode = bool.fromEnvironment('DEBUG_MODE', defaultValue: false);
-  static const bool enableAnalytics = bool.fromEnvironment('ENABLE_ANALYTICS', defaultValue: true);
-  static const bool enableCrashlytics = bool.fromEnvironment('ENABLE_CRASHLYTICS', defaultValue: true);
-  static const bool enableLogging = bool.fromEnvironment('ENABLE_LOGGING', defaultValue: true);
+  static const bool enableDebugMode = bool.fromEnvironment(
+    'DEBUG_MODE',
+    defaultValue: false,
+  );
+  static const bool enableAnalytics = bool.fromEnvironment(
+    'ENABLE_ANALYTICS',
+    defaultValue: true,
+  );
+  static const bool enableCrashlytics = bool.fromEnvironment(
+    'ENABLE_CRASHLYTICS',
+    defaultValue: true,
+  );
+  static const bool enableLogging = bool.fromEnvironment(
+    'ENABLE_LOGGING',
+    defaultValue: true,
+  );
 
   // Social Login
-  static const bool enableGoogleLogin = bool.fromEnvironment('ENABLE_GOOGLE_LOGIN', defaultValue: true);
-  static const bool enableFacebookLogin = bool.fromEnvironment('ENABLE_FACEBOOK_LOGIN', defaultValue: true);
-  static const bool enableAppleLogin = bool.fromEnvironment('ENABLE_APPLE_LOGIN', defaultValue: true);
+  static const bool enableGoogleLogin = bool.fromEnvironment(
+    'ENABLE_GOOGLE_LOGIN',
+    defaultValue: true,
+  );
+  static const bool enableFacebookLogin = bool.fromEnvironment(
+    'ENABLE_FACEBOOK_LOGIN',
+    defaultValue: true,
+  );
+  static const bool enableAppleLogin = bool.fromEnvironment(
+    'ENABLE_APPLE_LOGIN',
+    defaultValue: true,
+  );
 
   // Deep Links
   static const String deepLinkScheme = 'blueprintapp';
   static const String deepLinkHost = 'app.blueprint.com';
 
   // File Upload
-  static const List<String> allowedImageTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-  static const List<String> allowedDocumentTypes = ['pdf', 'doc', 'docx', 'txt'];
+  static const List<String> allowedImageTypes = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp',
+  ];
+  static const List<String> allowedDocumentTypes = [
+    'pdf',
+    'doc',
+    'docx',
+    'txt',
+  ];
   static const List<String> allowedVideoTypes = ['mp4', 'avi', 'mov', 'mkv'];
 
   // Notification
   static const String notificationChannelId = 'blueprint_notifications';
   static const String notificationChannelName = 'Blueprint Notifications';
-  static const String notificationChannelDescription = 'General notifications from Blueprint App';
+  static const String notificationChannelDescription =
+      'General notifications from Blueprint App';
 
   // Database
   static const String databaseName = 'blueprint_app.db';
   static const int databaseVersion = 1;
 
   // Environment
-  static bool get isProduction => const String.fromEnvironment('ENVIRONMENT') == 'production';
-  static bool get isStaging => const String.fromEnvironment('ENVIRONMENT') == 'staging';
-  static bool get isDevelopment => const String.fromEnvironment('ENVIRONMENT') == 'development';
+  static bool get isProduction =>
+      const String.fromEnvironment('ENVIRONMENT') == 'production';
+  static bool get isStaging =>
+      const String.fromEnvironment('ENVIRONMENT') == 'staging';
+  static bool get isDevelopment =>
+      const String.fromEnvironment('ENVIRONMENT') == 'development';
 
   // URLs
   static String get termsOfServiceUrl => '$baseUrl/terms';

@@ -8,7 +8,11 @@ class RegisterUseCase {
 
   RegisterUseCase(this.repository);
 
-  Future<Result<AuthToken>> call(String emailString, String passwordString, String nameString) async {
+  Future<Result<AuthToken>> call(
+    String emailString,
+    String passwordString,
+    String nameString,
+  ) async {
     try {
       // Create value objects with validation
       final email = Email.create(emailString);

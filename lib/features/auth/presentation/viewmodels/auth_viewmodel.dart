@@ -14,7 +14,12 @@ class AuthViewModel extends ChangeNotifier {
   final LogoutUseCase logoutUseCase;
   final GetCurrentUserUseCase getCurrentUserUseCase;
 
-  AuthViewModel({required this.loginUseCase, required this.registerUseCase, required this.logoutUseCase, required this.getCurrentUserUseCase});
+  AuthViewModel({
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.logoutUseCase,
+    required this.getCurrentUserUseCase,
+  });
 
   AuthState _state = AuthState.initial;
   User? _currentUser;
@@ -34,16 +39,13 @@ class AuthViewModel extends ChangeNotifier {
 
     final result = await loginUseCase.call(email, password);
 
-    result.fold(
-      (token) async {
-        // Get current user after successful login
-        await _getCurrentUser();
-      },
-      (error) {
-        _error = error;
-        _setState(AuthState.error);
-      },
-    );
+    if (result.isSuccess) {
+      // Get current user after successful login
+      await _getCurrentUser();
+    } else {
+      _error = result.error;
+      _setState(AuthState.error);
+    }
   }
 
   // Register
@@ -53,16 +55,13 @@ class AuthViewModel extends ChangeNotifier {
 
     final result = await registerUseCase.call(email, password, name);
 
-    result.fold(
-      (token) async {
-        // Get current user after successful registration
-        await _getCurrentUser();
-      },
-      (error) {
-        _error = error;
-        _setState(AuthState.error);
-      },
-    );
+    if (result.isSuccess) {
+      // Get current user after successful registration
+      await _getCurrentUser();
+    } else {
+      _error = result.error;
+      _setState(AuthState.error);
+    }
   }
 
   // Logout

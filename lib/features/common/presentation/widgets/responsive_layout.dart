@@ -8,7 +8,13 @@ class ResponsiveFormContainer extends StatelessWidget {
   final bool centerContent;
   final bool enableScrolling;
 
-  const ResponsiveFormContainer({super.key, required this.child, this.padding, this.centerContent = true, this.enableScrolling = true});
+  const ResponsiveFormContainer({
+    super.key,
+    required this.child,
+    this.padding,
+    this.centerContent = true,
+    this.enableScrolling = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +29,11 @@ class ResponsiveFormContainer extends StatelessWidget {
     if (centerContent) {
       content = ConstrainedBox(
         constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - kToolbarHeight - (padding?.vertical ?? 48),
+          minHeight:
+              MediaQuery.of(context).size.height -
+              MediaQuery.of(context).padding.top -
+              kToolbarHeight -
+              (padding?.vertical ?? 48),
         ),
         child: IntrinsicHeight(child: content),
       );
@@ -31,7 +41,10 @@ class ResponsiveFormContainer extends StatelessWidget {
 
     // Add scrolling if enabled
     if (enableScrolling) {
-      content = SingleChildScrollView(padding: padding, child: centerContent ? content : child);
+      content = SingleChildScrollView(
+        padding: padding,
+        child: centerContent ? content : child,
+      );
     }
 
     // Wrap in SafeArea
@@ -61,12 +74,19 @@ class ResponsiveColumn extends StatelessWidget {
     List<Widget> responsiveChildren = children;
 
     // Add flexible spacers if centering and flexible spacing enabled
-    if (mainAxisAlignment == MainAxisAlignment.center && enableFlexibleSpacing) {
-      responsiveChildren = [const Spacer(flex: 1), ...children, const Spacer(flex: 1)];
+    if (mainAxisAlignment == MainAxisAlignment.center &&
+        enableFlexibleSpacing) {
+      responsiveChildren = [
+        const Spacer(flex: 1),
+        ...children,
+        const Spacer(flex: 1),
+      ];
     }
 
     return Column(
-      mainAxisAlignment: enableFlexibleSpacing ? MainAxisAlignment.start : mainAxisAlignment,
+      mainAxisAlignment: enableFlexibleSpacing
+          ? MainAxisAlignment.start
+          : mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: mainAxisSize,
       children: responsiveChildren,
@@ -105,7 +125,11 @@ class ResponsiveRow extends StatelessWidget {
       );
     }
 
-    return Row(mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: crossAxisAlignment, children: children);
+    return Row(
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
+      children: children,
+    );
   }
 
   WrapAlignment _wrapAlignment(MainAxisAlignment mainAxisAlignment) {
@@ -125,7 +149,9 @@ class ResponsiveRow extends StatelessWidget {
     }
   }
 
-  WrapCrossAlignment _wrapCrossAlignment(CrossAxisAlignment crossAxisAlignment) {
+  WrapCrossAlignment _wrapCrossAlignment(
+    CrossAxisAlignment crossAxisAlignment,
+  ) {
     switch (crossAxisAlignment) {
       case CrossAxisAlignment.start:
         return WrapCrossAlignment.start;
@@ -180,7 +206,9 @@ class ResponsiveContainer extends StatelessWidget {
 /// Extension to check screen size breakpoints
 extension ResponsiveExtensions on BuildContext {
   bool get isMobile => MediaQuery.of(this).size.width < 600;
-  bool get isTablet => MediaQuery.of(this).size.width >= 600 && MediaQuery.of(this).size.width < 1024;
+  bool get isTablet =>
+      MediaQuery.of(this).size.width >= 600 &&
+      MediaQuery.of(this).size.width < 1024;
   bool get isDesktop => MediaQuery.of(this).size.width >= 1024;
 
   double get screenWidth => MediaQuery.of(this).size.width;

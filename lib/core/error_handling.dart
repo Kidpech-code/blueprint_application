@@ -80,7 +80,10 @@ extension ResultExtension<T> on Result<T> {
   T? get data => isSuccess ? (this as Success<T>).data : null;
   AppError? get error => isFailure ? (this as Failure<T>).error : null;
 
-  R fold<R>(R Function(T data) onSuccess, R Function(AppError error) onFailure) {
+  R fold<R>(
+    R Function(T data) onSuccess,
+    R Function(AppError error) onFailure,
+  ) {
     if (isSuccess) {
       return onSuccess((this as Success<T>).data);
     } else {

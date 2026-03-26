@@ -24,12 +24,28 @@ import 'package:blueprint_application/core/error_handling.dart';
 class TestAuthRepository implements AuthRepository {
   @override
   Future<Result<AuthToken>> login(Email email, Password password) async {
-    return Success(AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1))));
+    return Success(
+      AuthToken(
+        accessToken: 'test-token',
+        refreshToken: 'test-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      ),
+    );
   }
 
   @override
-  Future<Result<AuthToken>> register(Email email, Password password, Name name) async {
-    return Success(AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1))));
+  Future<Result<AuthToken>> register(
+    Email email,
+    Password password,
+    Name name,
+  ) async {
+    return Success(
+      AuthToken(
+        accessToken: 'test-token',
+        refreshToken: 'test-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      ),
+    );
   }
 
   @override
@@ -39,13 +55,24 @@ class TestAuthRepository implements AuthRepository {
 
   @override
   Future<Result<User>> getCurrentUser() async {
-    return Success(User(id: 'test-id', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now()));
+    return Success(
+      User(
+        id: 'test-id',
+        email: 'test@example.com',
+        name: 'Test User',
+        createdAt: DateTime.now(),
+      ),
+    );
   }
 
   @override
   Future<Result<AuthToken>> refreshToken(String refreshToken) async {
     return Success(
-      AuthToken(accessToken: 'new-test-token', refreshToken: 'new-test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1))),
+      AuthToken(
+        accessToken: 'new-test-token',
+        refreshToken: 'new-test-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      ),
     );
   }
 
@@ -65,7 +92,8 @@ class TestAuthRepository implements AuthRepository {
   Future<Result<void>> resetPassword(Email email) async => Success(null);
 
   @override
-  Future<Result<void>> verifyEmail(String verificationCode) async => Success(null);
+  Future<Result<void>> verifyEmail(String verificationCode) async =>
+      Success(null);
 
   @override
   Future<Result<void>> resendVerificationEmail() async => Success(null);

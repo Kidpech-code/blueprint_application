@@ -28,7 +28,8 @@ class SimpleAuthRepository implements AuthRepository {
   bool _shouldSucceed = true;
 
   void setLoginResult(Result<AuthToken> result) => _loginResult = result;
-  void setGetCurrentUserResult(Result<User> result) => _getCurrentUserResult = result;
+  void setGetCurrentUserResult(Result<User> result) =>
+      _getCurrentUserResult = result;
   void setShouldSucceed(bool value) => _shouldSucceed = value;
 
   @override
@@ -40,7 +41,13 @@ class SimpleAuthRepository implements AuthRepository {
     }
 
     if (_shouldSucceed) {
-      return Success(AuthToken(accessToken: 'test-token', refreshToken: 'test-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1))));
+      return Success(
+        AuthToken(
+          accessToken: 'test-token',
+          refreshToken: 'test-refresh',
+          expiresAt: DateTime.now().add(const Duration(hours: 1)),
+        ),
+      );
     } else {
       return Failure(AuthenticationError('Login failed'));
     }
@@ -55,17 +62,32 @@ class SimpleAuthRepository implements AuthRepository {
     }
 
     if (_shouldSucceed) {
-      return Success(User(id: 'test-user', email: 'test@example.com', name: 'Test User', createdAt: DateTime.now()));
+      return Success(
+        User(
+          id: 'test-user',
+          email: 'test@example.com',
+          name: 'Test User',
+          createdAt: DateTime.now(),
+        ),
+      );
     } else {
       return Failure(AuthenticationError('User not found'));
     }
   }
 
   @override
-  Future<Result<AuthToken>> register(Email email, Password password, Name name) async {
+  Future<Result<AuthToken>> register(
+    Email email,
+    Password password,
+    Name name,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 10));
     return Success(
-      AuthToken(accessToken: 'register-token', refreshToken: 'register-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1))),
+      AuthToken(
+        accessToken: 'register-token',
+        refreshToken: 'register-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      ),
     );
   }
 
@@ -88,14 +110,21 @@ class SimpleAuthRepository implements AuthRepository {
 
   @override
   Future<Result<AuthToken>> refreshToken(String refreshToken) async {
-    return Success(AuthToken(accessToken: 'new-token', refreshToken: 'new-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1))));
+    return Success(
+      AuthToken(
+        accessToken: 'new-token',
+        refreshToken: 'new-refresh',
+        expiresAt: DateTime.now().add(const Duration(hours: 1)),
+      ),
+    );
   }
 
   @override
   Future<Result<void>> resetPassword(Email email) async => const Success(null);
 
   @override
-  Future<Result<void>> verifyEmail(String verificationCode) async => const Success(null);
+  Future<Result<void>> verifyEmail(String verificationCode) async =>
+      const Success(null);
 
   @override
   Future<Result<void>> resendVerificationEmail() async => const Success(null);
@@ -152,7 +181,9 @@ void main() {
 
       test('should handle login failure', () async {
         // Arrange
-        repository.setLoginResult(Failure(AuthenticationError('Invalid credentials')));
+        repository.setLoginResult(
+          Failure(AuthenticationError('Invalid credentials')),
+        );
 
         // Act
         await viewModel.login('test@example.com', 'ValidPass123');
@@ -191,7 +222,11 @@ void main() {
         repository.setShouldSucceed(true);
 
         // Act
-        await viewModel.register('newuser@example.com', 'Password123', 'New User');
+        await viewModel.register(
+          'newuser@example.com',
+          'Password123',
+          'New User',
+        );
 
         // Wait for async operations to complete
         await Future.delayed(const Duration(milliseconds: 100));
@@ -246,7 +281,9 @@ void main() {
 
       test('should handle no existing session', () async {
         // Arrange
-        repository.setGetCurrentUserResult(Failure(AuthenticationError('No session')));
+        repository.setGetCurrentUserResult(
+          Failure(AuthenticationError('No session')),
+        );
 
         // Act
         await viewModel.checkAuthenticationStatus();
@@ -290,7 +327,13 @@ void main() {
 
         // Setup success for next operation
         repository.setLoginResult(
-          Success(AuthToken(accessToken: 'success-token', refreshToken: 'success-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)))),
+          Success(
+            AuthToken(
+              accessToken: 'success-token',
+              refreshToken: 'success-refresh',
+              expiresAt: DateTime.now().add(const Duration(hours: 1)),
+            ),
+          ),
         );
 
         // Act
@@ -398,10 +441,22 @@ void main() {
 
           // Assert
           if (shouldSucceed) {
-            expect(viewModel.state, isNot(equals(AuthState.error)), reason: 'Should accept valid email: $email');
+            expect(
+              viewModel.state,
+              isNot(equals(AuthState.error)),
+              reason: 'Should accept valid email: $email',
+            );
           } else {
-            expect(viewModel.state, equals(AuthState.error), reason: 'Should reject invalid email: $email');
-            expect(viewModel.error, isA<ValidationError>(), reason: 'Should have validation error for: $email');
+            expect(
+              viewModel.state,
+              equals(AuthState.error),
+              reason: 'Should reject invalid email: $email',
+            );
+            expect(
+              viewModel.error,
+              isA<ValidationError>(),
+              reason: 'Should have validation error for: $email',
+            );
           }
         }
       });
@@ -424,10 +479,22 @@ void main() {
 
           // Assert
           if (shouldSucceed) {
-            expect(viewModel.state, isNot(equals(AuthState.error)), reason: 'Should accept valid password: $password');
+            expect(
+              viewModel.state,
+              isNot(equals(AuthState.error)),
+              reason: 'Should accept valid password: $password',
+            );
           } else {
-            expect(viewModel.state, equals(AuthState.error), reason: 'Should reject invalid password: $password');
-            expect(viewModel.error, isA<ValidationError>(), reason: 'Should have validation error for: $password');
+            expect(
+              viewModel.state,
+              equals(AuthState.error),
+              reason: 'Should reject invalid password: $password',
+            );
+            expect(
+              viewModel.error,
+              isA<ValidationError>(),
+              reason: 'Should have validation error for: $password',
+            );
           }
         }
       });
@@ -455,7 +522,11 @@ void main() {
       expect(viewModel.state, equals(AuthState.initial));
 
       // 2. Register new user
-      await viewModel.register('newuser@example.com', 'Password123', 'New User');
+      await viewModel.register(
+        'newuser@example.com',
+        'Password123',
+        'New User',
+      );
 
       // Wait for async operations to complete
       await waitForAsyncOp();
@@ -493,7 +564,13 @@ void main() {
 
       // 2. Recover with successful login
       repository.setLoginResult(
-        Success(AuthToken(accessToken: 'recovery-token', refreshToken: 'recovery-refresh', expiresAt: DateTime.now().add(const Duration(hours: 1)))),
+        Success(
+          AuthToken(
+            accessToken: 'recovery-token',
+            refreshToken: 'recovery-refresh',
+            expiresAt: DateTime.now().add(const Duration(hours: 1)),
+          ),
+        ),
       );
       await viewModel.login('correct@example.com', 'Password123');
       await waitForAsyncOp();
@@ -508,7 +585,10 @@ void main() {
 /// ฟังก์ชันช่วยเหลือสำหรับการทดสอบ
 extension AuthViewModelTestExtensions on AuthViewModel {
   /// Wait for state to change to expected value or timeout
-  Future<void> waitForState(AuthState expectedState, {Duration timeout = const Duration(seconds: 1)}) async {
+  Future<void> waitForState(
+    AuthState expectedState, {
+    Duration timeout = const Duration(seconds: 1),
+  }) async {
     final completer = Completer<void>();
     late VoidCallback listener;
 
@@ -527,7 +607,11 @@ extension AuthViewModelTestExtensions on AuthViewModel {
     Timer(timeout, () {
       removeListener(listener);
       if (!completer.isCompleted) {
-        completer.completeError(TimeoutException('State did not change to $expectedState within $timeout'));
+        completer.completeError(
+          TimeoutException(
+            'State did not change to $expectedState within $timeout',
+          ),
+        );
       }
     });
 
